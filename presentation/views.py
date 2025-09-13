@@ -4,8 +4,8 @@ views_bp = Blueprint('views', __name__)
 
 @views_bp.route('/')
 def index():
-    return "Este es el index, wachin"
+    return render_template('index.html')
 
 @views_bp.route('/hello/<name>')
 def hello(name):
-    return f"Hello {name}! tremendo loro"
+    return f"Hello {name}!"
