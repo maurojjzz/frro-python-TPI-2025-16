@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+</head>
+<body>
+    <h1>Registro de Usuario</h1>
+    <form action="{{ url_for('views.register') }}" method="POST">
+        <label>Nombre:</label>
+        <input type="text" name="nombre" required><br>
+
+        <label>Apellido:</label>
+        <input type="text" name="apellido" required><br>
+
+        <label>Email:</label>
+        <input type="email" name="email" required><br>
+
+        <label>Contraseña:</label>
+        <input type="password" name="contrasena" required><br>
+
+        <button type="submit">Registrar</button>
+    </form>
+</body>
+</html>
