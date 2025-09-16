@@ -1,6 +1,5 @@
 from flask import Blueprint, render_template, jsonify, request
-from controller.cloudinary_service import subir_imagen_a_cloudinary
-
+from controller.imagen import subir_imagen_controller
 views_bp = Blueprint('views', __name__)
 
 
@@ -15,21 +14,15 @@ def hello(name):
 
 
 @views_bp.route('/subir-imagen', methods=['POST'])
-def subir_imagen():
-    print("ruta subida imagenes")
-    
+def subir_imagen():    
     if 'imagen' not in request.files:
         return jsonify({"success": False, "error": "No se ha proporcionado ninguna imagen"}), 400
     
     file = request.files['imagen']
-    print("Archivo recibido: ", file.filename)
-    
-    if file.mimetype not in ['image/jpeg', 'image/png']:
-        return jsonify({"success": False, "error": "El archivo debe ser una imagen JPEG o PNG"}), 400
     
     id_usuario = 1  # es temporal dsp lo sacamos del token si esta loguedo
     
-    resultado_subida = subir_imagen_a_cloudinary(file, id_usuario)
+    resultado_subida = subir_imagen_controller(file, id_usuario)
     
     if resultado_subida['success']:
         return jsonify({
@@ -37,7 +30,7 @@ def subir_imagen():
             "url": resultado_subida['url'],
             "public_id": resultado_subida['public_id'],
             "message": resultado_subida['message']
-        })
+        }), 200
     else:
         return jsonify({
             "success": False,

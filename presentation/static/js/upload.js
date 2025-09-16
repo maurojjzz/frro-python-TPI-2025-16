@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const fileInput = document.getElementById("file-input");
   const uploadBox = document.querySelector(".upload-box");
   const spinner = document.getElementById("upload-spinner");
+  const label = document.querySelector(".label-formulario");
 
   if (!form || !fileInput) return;
 
@@ -29,26 +30,42 @@ document.addEventListener("DOMContentLoaded", function () {
     formData.append("imagen", file);
 
     try {
-      [...uploadBox.children].forEach((child) => {
-        if (child !== spinner) {
-          child.classList.add("d-none");
-        }
-      });
+      document.querySelector(".titulo-tarjeta-sube").classList.add("d-none");
+      document.querySelector(".imagen-subir").classList.add("d-none");
+      form.classList.add("d-none");
+      label.classList.remove("image-upload");
+      const oldPreview = uploadBox.querySelector(".upload-form");
+      if (oldPreview) oldPreview.remove();
       spinner.classList.remove("d-none");
+
       const response = await fetch("http://127.0.0.1:5000/subir-imagen", {
         method: "POST",
         body: formData,
       });
       const data = await response.json();
-      console.log("respuesta backend", data);
 
       if (data.success) {
-        alert("Imagen subida con éxito");
+        const boxImage = document.createElement("div");
+        boxImage.classList.add("upload-form", "position-relative", "rounded-3");
 
         const preview = document.createElement("img");
         preview.src = data.url;
-        preview.classList.add("img-fluid", "mt-2");
-        uploadBox.appendChild(preview);
+        preview.classList.add("img-fluid");
+
+        boxImage.appendChild(preview);
+
+        label.classList.add("image-upload-other", "mt-2");
+        document.querySelector(".subt").textContent = "Haz click para subir otra imagen";
+        boxImage.style.overflow = "hidden";
+        boxImage.style.position = "relative";
+        boxImage.style.marginTop = "10px";
+        boxImage.style.minHeight = "270px";
+
+        form.style.height = "190px";
+        form.classList.remove("d-none");
+
+        uploadBox.classList.add("justify-content-center");
+        uploadBox.prepend(boxImage);
       } else {
         alert("Error al subir la imagen", data?.error);
       }
