@@ -38,7 +38,7 @@
 
       <div class="container-fluid sub-box mt-3">
         <div class="first-block d-flex flex-row gap-4">
-          <div class="upload-box shadow-lg border px-3">
+          <div class="upload-box shadow-lg border px-3 position-relative">
             <h4 class="mt-5 mb-4 fs-4">Sube tu comida</h4>
             <form id="upload-form" enctype="multipart/form-data">
               <label for="file-input" class="image-upload d-flex flex-column align-items-center justify-content-center">
@@ -48,6 +48,11 @@
               </label>
               <input class="d-none" id="file-input" name="imagen" type="file" accept="image/png, image/jpeg" />
             </form>
+            <div id="upload-spinner" class="d-none position-absolute top-50 start-50 translate-middle">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Subiendo...</span>
+              </div>
+            </div>
           </div>
 
           <div class="upload-box shadow-lg border px-3">

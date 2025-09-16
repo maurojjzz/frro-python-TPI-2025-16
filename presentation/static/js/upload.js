@@ -1,7 +1,8 @@
 document.addEventListener("DOMContentLoaded", function () {
   const form = document.getElementById("upload-form");
   const fileInput = document.getElementById("file-input");
-  const uploadLabel = document.querySelector(".image-upload");
+  const uploadBox = document.querySelector(".upload-box");
+  const spinner = document.getElementById("upload-spinner");
 
   if (!form || !fileInput) return;
 
@@ -28,6 +29,12 @@ document.addEventListener("DOMContentLoaded", function () {
     formData.append("imagen", file);
 
     try {
+      [...uploadBox.children].forEach((child) => {
+        if (child !== spinner) {
+          child.classList.add("d-none");
+        }
+      });
+      spinner.classList.remove("d-none");
       const response = await fetch("http://127.0.0.1:5000/subir-imagen", {
         method: "POST",
         body: formData,
@@ -37,15 +44,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (data.success) {
         alert("Imagen subida con éxito");
+
         const preview = document.createElement("img");
         preview.src = data.url;
         preview.classList.add("img-fluid", "mt-2");
-        document.querySelector(".upload-box").appendChild(preview);
+        uploadBox.appendChild(preview);
       } else {
         alert("Error al subir la imagen", data?.error);
       }
     } catch (error) {
       console.error("Error en la solicitud:", error);
+    } finally {
+      spinner.classList.add("d-none");
     }
   });
 });
