@@ -1,11 +1,15 @@
 from flask import Flask
 from presentation.views import views_bp
+from data import models
+from data.database import engine, Base
 
 app = Flask(__name__, template_folder='presentation/templates',
             static_folder='presentation/static')
 
 
 app.register_blueprint(views_bp)
+
+Base.metadata.create_all(bind=engine)
 
 
 @app.route('/test')
