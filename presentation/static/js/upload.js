@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const uploadBox = document.querySelector(".upload-box");
   const spinner = document.getElementById("upload-spinner");
   const label = document.querySelector(".label-formulario");
+  const API_URL = window.API_URL;
 
   if (!form || !fileInput) return;
 
@@ -38,7 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
       if (oldPreview) oldPreview.remove();
       spinner.classList.remove("d-none");
 
-      const response = await fetch("http://127.0.0.1:5000/subir-imagen", {
+      const response = await fetch(`${API_URL}/subir-imagen`, {
         method: "POST",
         body: formData,
       });

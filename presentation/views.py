@@ -1,11 +1,16 @@
 from flask import Blueprint, render_template, jsonify, request
+import os
+from dotenv import load_dotenv
 from controller.imagen import subir_imagen_controller
+
 views_bp = Blueprint('views', __name__)
 
+load_dotenv()
 
 @views_bp.route('/')
 def index():
-    return render_template('index.html')
+    api_url= os.getenv('API_URL')
+    return render_template('index.html', api_url=api_url)
 
 
 @views_bp.route('/hello/<name>')
