@@ -20,11 +20,6 @@ def get_access_token():
     response = requests.post(url, auth=auth, data=data)
     response.raise_for_status()
     
-    print("DEBUG token: ", response.json())
-    
-    if response.status_code != 200:
-        print("DEBUG token error: ", response.status_code, response.text)
-    
     return response.json()["access_token"]
 
 def reconocer_imagen(url_imagen):
