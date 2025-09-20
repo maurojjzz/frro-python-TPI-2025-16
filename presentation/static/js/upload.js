@@ -45,6 +45,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       const data = await response.json();
 
+      console.log(data);
+
       if (data.success) {
         const boxImage = document.createElement("div");
         boxImage.classList.add("upload-form", "position-relative", "rounded-3");
@@ -67,6 +69,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
         uploadBox.classList.add("justify-content-center");
         uploadBox.prepend(boxImage);
+
+        // aca la logica del cuadro analisis nutricional
+
+        const secondBox = document.querySelector(".second-analisis-box");
+        secondBox.classList.add("position-relative");
+        document.querySelector(".analisis_nutricional").classList.add("d-none");
+        const spinner = document.createElement("div");
+        spinner.id = "upload-spinner";
+        spinner.classList.add("position-absolute", "top-50", "start-50", "translate-middle");
+        spinner.innerHTML =
+          '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Subiendo...</span></div>';
+
+        secondBox.appendChild(spinner);
+
+        setTimeout(() => {
+          secondBox.removeChild(spinner);
+          secondBox.innerHTML = `
+           <div class="d-flex flex-column flex-grow  w-100 h-100 ">
+              <h4 class="mt-2 mb-3 fs-4 text-start ">Analisis Nutricional</h4>
+              <h5 class="fs-6 fw-normal text-start">Alimento detectado:</h5>
+              <div class="analisis-nutrientes d-flex flex-column flex-grow-1 border border-success">
+                <h4 class="fs-5 text-start">${data?.titulo_atractivo || "Plato de comida detectado"}</h4>
+                <div class="d-flex flex-grow-1 align-items-center border border-danger">
+                    aca va todo el contenido nutricional
+                    calorias, grasas, proteinas, etc etc
+                </div>
+              </div>
+            </div>
+          `;
+        }, 3000);
       } else {
         alert("Error al subir la imagen", data?.error);
       }

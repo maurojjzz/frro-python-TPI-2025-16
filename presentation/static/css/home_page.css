@@ -117,6 +117,10 @@ i.analisis {
   margin-bottom: 25px;
 }
 
+.analisis-nutrientes h4{
+    color: #15a349;
+}
+
 @media (max-width: 690px) {
   .first-block {
     border: 1px solid red;
