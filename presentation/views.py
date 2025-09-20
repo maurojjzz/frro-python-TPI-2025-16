@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from controller.imagen import subir_imagen_controller
 from controller.fat_secret import reconocer_imagen
+from controller.generador_titulo import extraer_nombres_de_fatsecret, generar_titulo_con_openai
 
 views_bp = Blueprint('views', __name__)
 
@@ -35,12 +36,17 @@ def subir_imagen():
         try:
             reconocimiento = reconocer_imagen(resultado_subida['url'])
             
+            nombres_alimentos = extraer_nombres_de_fatsecret(reconocimiento)
+            titulo_atractivo = generar_titulo_con_openai(nombres_alimentos)    
+            
             return jsonify({
                 "success": True,
                 "url": resultado_subida['url'],
                 "public_id": resultado_subida['public_id'],
                 "message": resultado_subida['message'],
-                "reconocimiento": reconocimiento
+                "titulo_atractivo": titulo_atractivo,
+                "alimentos_identificadoos": nombres_alimentos,
+                "reconocimiento": reconocimiento,
             }), 200
         except Exception as e:
             return jsonify({
