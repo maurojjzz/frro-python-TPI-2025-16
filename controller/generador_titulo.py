@@ -1,8 +1,6 @@
 import os
 import requests
-from dotenv import load_dotenv
 
-load_dotenv()
 
 GEMINI_API_URL = os.getenv('GEMINI_API_URL')
 GEMINI_API_TOKEN = os.getenv('GEMINI_API_TOKEN')
@@ -72,7 +70,7 @@ def generar_titulo_con_openai(nombre_alimentos):
             json=payload,
             timeout=30
         )
-        print(response)
+        print(response.json())
 
         if response.status_code == 200:
             resultado = response.json()
