@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, jsonify, request, redirect, url_for
+from flask import Blueprint, render_template, jsonify, request, redirect, url_for, current_app,session
 from controller.user_controller import registrar_usuario
-
+from controller.login_controller import login_usuario
 
 views_bp = Blueprint('views', __name__)
 
@@ -10,14 +10,26 @@ def home():
 
 @views_bp.route('/index')
 def index():
-    return render_template('index.html')
+    usuario=session['usuario']
+    return render_template('index.html',usuario=usuario)
 
 @views_bp.route('/hello/<name>')
 def hello(name):
     return f"Hello {name}!"
 
-@views_bp.route('/login')
+@views_bp.route('/login',methods=['GET','POST'])
 def login ():
+    if request.method=='POST':
+        email=request.form['email']
+        contrasena=request.form['contrasena']
+    
+        try:
+         login_usuario (email,contrasena)
+         return redirect(url_for('views.index'))
+        except ValueError as ve:
+            return f"Error: {ve}"   
+        except Exception as e:
+            return f"Error inesperado: {e}"
     return render_template('login.html')
 
 @views_bp.route('/register', methods=['GET', 'POST'])
@@ -30,7 +42,10 @@ def register():
 
         try:
             registrar_usuario(nombre, apellido, email, contrasena)
+            
             return redirect(url_for('views.login'))
+        except ValueError as ve:
+            return f"Error: {ve}"   
         except Exception as e:
-            return f"Error al registrar: {e}"
+            return f"Error inesperado: {e}"
     return render_template('register.html')

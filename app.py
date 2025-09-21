@@ -6,6 +6,7 @@ from data.database import engine, Base
 app = Flask(__name__, template_folder='presentation/templates',
             static_folder='presentation/static')
 
+app.config['SECRET_KEY']='clavesesionsecreta'
 
 app.register_blueprint(views_bp)
 
