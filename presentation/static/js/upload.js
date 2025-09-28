@@ -71,34 +71,7 @@ document.addEventListener("DOMContentLoaded", function () {
         uploadBox.prepend(boxImage);
 
         // aca la logica del cuadro analisis nutricional
-
-        const secondBox = document.querySelector(".second-analisis-box");
-        secondBox.classList.add("position-relative");
-        document.querySelector(".analisis_nutricional").classList.add("d-none");
-        const spinner = document.createElement("div");
-        spinner.id = "upload-spinner";
-        spinner.classList.add("position-absolute", "top-50", "start-50", "translate-middle");
-        spinner.innerHTML =
-          '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Subiendo...</span></div>';
-
-        secondBox.appendChild(spinner);
-
-        setTimeout(() => {
-          secondBox.removeChild(spinner);
-          secondBox.innerHTML = `
-           <div class="d-flex flex-column flex-grow  w-100 h-100 ">
-              <h4 class="mt-2 mb-3 fs-4 text-start ">Analisis Nutricional</h4>
-              <h5 class="fs-6 fw-normal text-start">Alimento detectado:</h5>
-              <div class="analisis-nutrientes d-flex flex-column flex-grow-1 border border-success">
-                <h4 class="fs-5 text-start">${data?.titulo_atractivo || "Plato de comida detectado"}</h4>
-                <div class="d-flex flex-grow-1 align-items-center border border-danger">
-                    aca va todo el contenido nutricional
-                    calorias, grasas, proteinas, etc etc
-                </div>
-              </div>
-            </div>
-          `;
-        }, 3000);
+        updateAnalysisBox(data);
       } else {
         alert("Error al subir la imagen", data?.error);
       }
@@ -108,4 +81,67 @@ document.addEventListener("DOMContentLoaded", function () {
       spinner.classList.add("d-none");
     }
   });
+
+  function updateAnalysisBox(data) {
+    const secondBox = document.querySelector(".second-analisis-box");
+    secondBox.classList.add("position-relative");
+    
+    // Ocultar todo el contenido actual
+    const allContent = secondBox.querySelectorAll("*:not(#analysis-spinner)");
+    allContent.forEach(element => {
+      element.style.display = "none";
+    });
+    
+    // Remover cualquier spinner previo
+    const existingSpinner = secondBox.querySelector("#analysis-spinner");
+    if (existingSpinner) {
+      existingSpinner.remove();
+    }
+    
+    // Crear nuevo spinner
+    const analysisSpinner = document.createElement("div");
+    analysisSpinner.id = "analysis-spinner";
+    analysisSpinner.classList.add("position-absolute", "top-50", "start-50", "translate-middle");
+    analysisSpinner.innerHTML =
+      '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Analizando...</span></div>';
+
+    secondBox.appendChild(analysisSpinner);
+
+    setTimeout(() => {
+      // Remover el spinner
+      const spinnerToRemove = secondBox.querySelector("#analysis-spinner");
+      if (spinnerToRemove) {
+        spinnerToRemove.remove();
+      }
+      
+      // Actualizar el contenido completo del cuadro
+      secondBox.innerHTML = `
+       <div class="d-flex flex-column flex-grow w-100 h-100">
+          <h4 class="mt-2 mb-3 fs-4 text-start">Analisis Nutricional</h4>
+          <h5 class="fs-6 fw-normal text-start">Alimento detectado:</h5>
+          <div class="analisis-nutrientes d-flex flex-column flex-grow-1 border border-success">
+            <h4 class="fs-5 text-start">${data?.titulo_atractivo || "Plato de comida detectado"}</h4>
+            <div class="d-flex flex-grow-1 align-items-center border border-danger">
+              
+            </div>
+          </div>
+        </div>
+      `;
+    }, 3000);
+  }
 });
+
+// Función auxiliar para resetear el cuadro de análisis
+function resetAnalysisBox() {
+  const secondBox = document.querySelector(".second-analisis-box");
+  secondBox.innerHTML = `
+    <div class="analisis_nutricional">
+      <h4 class="mt-5 mb-4 fs-4">Analisis Nutricional</h4>
+      <div>
+        <i class="fa-solid fa-magnifying-glass-chart analisis"></i>
+        <p class="mt-2 subt">No hay datos</p>
+        <p class="aclaracion">Sube una imagen para obtener análisis</p>
+      </div>
+    </div>
+  `;
+}
