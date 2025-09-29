@@ -117,8 +117,43 @@ i.analisis {
   margin-bottom: 25px;
 }
 
-.analisis-nutrientes h4{
-    color: #15a349;
+.analisis-nutrientes h4 {
+  color: #15a349;
+}
+
+.datos-nutri-box {
+  justify-content: space-between;
+  width: 80%;
+}
+.progreso-barras-box{
+  width: 80%;
+  height: 65%;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.datos-nutri-box div p {
+  margin-bottom: 0;
+}
+
+.sgundo-sub {
+  color: #488af7;
+}
+
+.trcer-sub {
+  color: #ecba1d;
+}
+
+.info-sub-sub{
+  color: #616976;
+  font-size: 0.7rem;
+}
+
+.caption-barra{
+  font-size: 0.7rem;
+  color: #616976;
 }
 
 @media (max-width: 690px) {
