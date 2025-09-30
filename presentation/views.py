@@ -42,6 +42,18 @@ def subir_imagen():
             titulo_atractivo = generar_titulo_con_openai(nombres_alimentos)    
            
             analisis_nutricion = procesar_datos_fasecret(reconocimiento)
+            
+            food_db=crear_comida({
+                "nombre": titulo_atractivo,
+                "descripcion": f"Comida reconocida: {', '.join(nombres_alimentos)}",
+                "calorias": analisis_nutricion.get("calorias", 0),
+                "grasas": analisis_nutricion.get("grasas", 0),
+                "proteinas": analisis_nutricion.get("proteinas", 0),
+                "carbohidratos": analisis_nutricion.get("carbohidratos", 0),
+                "colesterol": analisis_nutricion.get("colesterol", 0),
+                "imagen_url": resultado_subida['url'],
+                "usuario_id": id_usuario
+            })
                         
             return jsonify({
                 "success": True,
@@ -51,6 +63,7 @@ def subir_imagen():
                 "titulo_atractivo": titulo_atractivo,
                 "alimentos_identificadoos": nombres_alimentos,
                 "reconocimiento": reconocimiento,
+                "comida_id": food_db.get("comida_id")
             }), 200
         except Exception as e:
             return jsonify({

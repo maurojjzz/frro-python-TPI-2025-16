@@ -15,8 +15,7 @@ def crear_comida(datos: dict) -> dict:
             proteinas=datos["proteinas"],
             carbohidratos=datos["carbohidratos"],
             colesterol=datos["colesterol"],
-            fecha_consumo=datetime.strptime(
-                datos["fecha_consumo"], "%Y-%m-%d").date(),
+            fecha_consumo= datetime.now().date(),
             imagen_url=datos.get("imagen_url"),
             usuario_id=datos["usuario_id"]
         )
