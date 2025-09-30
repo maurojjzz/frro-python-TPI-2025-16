@@ -227,5 +227,11 @@ const sumarValoresNutricionales = (f_data) => {
     }
   });
 
-  return total;
+  return {
+    calorias: Math.round(total.calorias * 10) / 10,
+    proteinas: Math.round(total.proteinas * 10) / 10,
+    grasas: Math.round(total.grasas * 10) / 10,
+    carbohidratos: Math.round(total.carbohidratos * 10) / 10,
+    colesterol: Math.round(total.colesterol * 10) / 10,
+  };
 };

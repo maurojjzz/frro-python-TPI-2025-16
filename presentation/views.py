@@ -2,8 +2,10 @@ from flask import Blueprint, render_template, jsonify, request
 import os
 from dotenv import load_dotenv
 from controller.imagen import subir_imagen_controller
-from controller.fat_secret import reconocer_imagen
+from controller.fat_secret import reconocer_imagen, procesar_datos_fasecret
 from controller.generador_titulo import extraer_nombres_de_fatsecret, generar_titulo_con_openai
+from controller.comida import crear_comida
+
 
 views_bp = Blueprint('views', __name__)
 
@@ -38,7 +40,9 @@ def subir_imagen():
             
             nombres_alimentos = extraer_nombres_de_fatsecret(reconocimiento)
             titulo_atractivo = generar_titulo_con_openai(nombres_alimentos)    
-            
+           
+            analisis_nutricion = procesar_datos_fasecret(reconocimiento)
+                        
             return jsonify({
                 "success": True,
                 "url": resultado_subida['url'],
