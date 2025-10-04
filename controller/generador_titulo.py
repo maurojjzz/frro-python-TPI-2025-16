@@ -70,8 +70,7 @@ def generar_titulo_con_openai(nombre_alimentos):
             json=payload,
             timeout=30
         )
-        print(response.json())
-
+        
         if response.status_code == 200:
             resultado = response.json()
             titulo = resultado["candidates"][0]["content"]["parts"][0]["text"].strip(

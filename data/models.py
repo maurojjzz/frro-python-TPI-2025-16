@@ -21,6 +21,7 @@ class Comida(Base):
     grasas = Column(Float, nullable=False)
     proteinas = Column(Float, nullable=False)
     carbohidratos = Column(Float, nullable=False)
+    colesterol = Column(Float, nullable=False)
     fecha_consumo = Column(Date, nullable=False)
     imagen_url = Column(String(255), nullable=True)
     usuario_id = Column(Integer, ForeignKey("usuarios.id"))

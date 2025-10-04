@@ -2,8 +2,10 @@ from flask import Blueprint, render_template, jsonify, request
 import os
 from dotenv import load_dotenv
 from controller.imagen import subir_imagen_controller
-from controller.fat_secret import reconocer_imagen
+from controller.fat_secret import reconocer_imagen, procesar_datos_fasecret
 from controller.generador_titulo import extraer_nombres_de_fatsecret, generar_titulo_con_openai
+from controller.comida import crear_comida
+
 
 views_bp = Blueprint('views', __name__)
 
@@ -38,7 +40,21 @@ def subir_imagen():
             
             nombres_alimentos = extraer_nombres_de_fatsecret(reconocimiento)
             titulo_atractivo = generar_titulo_con_openai(nombres_alimentos)    
+           
+            analisis_nutricion = procesar_datos_fasecret(reconocimiento)
             
+            food_db=crear_comida({
+                "nombre": titulo_atractivo,
+                "descripcion": f"Comida reconocida: {', '.join(nombres_alimentos)}",
+                "calorias": analisis_nutricion.get("calorias", 0),
+                "grasas": analisis_nutricion.get("grasas", 0),
+                "proteinas": analisis_nutricion.get("proteinas", 0),
+                "carbohidratos": analisis_nutricion.get("carbohidratos", 0),
+                "colesterol": analisis_nutricion.get("colesterol", 0),
+                "imagen_url": resultado_subida['url'],
+                "usuario_id": id_usuario
+            })
+                        
             return jsonify({
                 "success": True,
                 "url": resultado_subida['url'],
@@ -47,6 +63,7 @@ def subir_imagen():
                 "titulo_atractivo": titulo_atractivo,
                 "alimentos_identificadoos": nombres_alimentos,
                 "reconocimiento": reconocimiento,
+                "comida_id": food_db.get("comida_id")
             }), 200
         except Exception as e:
             return jsonify({
