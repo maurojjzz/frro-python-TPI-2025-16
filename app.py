@@ -2,6 +2,10 @@ from flask import Flask
 from presentation.views import views_bp
 from data import models
 from data.database import engine, Base
+from data.cloudinary import cloudinary_configuracion
+
+
+cloudinary_configuracion()
 
 app = Flask(__name__, template_folder='presentation/templates',
             static_folder='presentation/static')

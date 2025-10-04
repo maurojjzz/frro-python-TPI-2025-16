@@ -35,14 +35,14 @@ body {
   align-items: center;
 }
 
-.first-block{
+.first-block {
   justify-content: space-between;
 }
 
-.first-block, .second-block {
+.first-block,
+.second-block {
   max-width: 1000px;
   width: 90%;
-  
 }
 
 .upload-box {
@@ -54,6 +54,7 @@ body {
   height: 390px;
   border-radius: 15px;
 }
+
 .upload-box h4 {
   font-size: 1.5rem;
   font-weight: 600;
@@ -69,7 +70,7 @@ body {
   font-weight: 600;
 }
 
-.image-upload{
+.image-upload {
   height: 230px;
   border: 2px dashed #d3d7dd;
   border-radius: 10px;
@@ -77,38 +78,93 @@ body {
   flex-direction: column;
   justify-content: center;
   cursor: pointer;
+  transition: border 0.3s;
 }
 
-.image-upload .subt, .upload-box .subt{
+.image-upload-other {
+  border: 2px dashed #d3d7dd;
+  height: 80px;
+  cursor: pointer;
+  transition: border 0.3s;
+  border-radius: 10px;
+}
+
+.image-upload:hover,
+.image-upload-other:hover {
+  border: 2px dashed black;
+  border-radius: 10px;
+}
+
+.image-upload .subt,
+.upload-box .subt {
   font-size: 1.2rem;
 }
-.image-upload .aclaracion, .upload-box .aclaracion{
+.image-upload .aclaracion,
+.upload-box .aclaracion {
   font-size: 0.85rem;
   color: #616976;
 }
 
-i.imagen-subir, i.analisis{
+i.imagen-subir,
+i.analisis {
   font-size: 60px;
   color: #d3d7dd;
 }
 
-i.analisis{
+i.analisis {
   font-size: 80px;
-  margin-top: 25px; 
+  margin-top: 25px;
   margin-bottom: 25px;
 }
 
+.analisis-nutrientes h4 {
+  color: #15a349;
+}
+
+.datos-nutri-box {
+  justify-content: space-between;
+  width: 80%;
+}
+.progreso-barras-box{
+  width: 80%;
+  height: 65%;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.datos-nutri-box div p {
+  margin-bottom: 0;
+}
+
+.sgundo-sub {
+  color: #488af7;
+}
+
+.trcer-sub {
+  color: #ecba1d;
+}
+
+.info-sub-sub{
+  color: #616976;
+  font-size: 0.7rem;
+}
+
+.caption-barra{
+  font-size: 0.7rem;
+  color: #616976;
+}
+
 @media (max-width: 690px) {
-  
   .first-block {
-    border:1px solid red;
+    border: 1px solid red;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
   }
 
-  .second-block{
+  .second-block {
     margin-bottom: 50px;
   }
-  
 }
