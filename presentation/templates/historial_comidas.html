@@ -1,108 +1,10 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Historial de Comidas</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f9fafb;
-            margin: 0;
-            padding: 0;
-        }
+{% extends "base.html" %}
 
-        header {
-            background: #4a90e2;
-            color: white;
-            padding: 1rem;
-            text-align: center;
-        }
+{% block title %}
+Historial de Comidas
+{% endblock %}
 
-        .container {
-            max-width: 800px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
-        }
-
-        h2 {
-            margin-bottom: 1rem;
-            color: #333;
-            text-align: center;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        th, td {
-            padding: 0.8rem;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background: #f1f5f9;
-            color: #444;
-        }
-
-        tr:hover {
-            background: #f9f9f9;
-        }
-
-        .mensaje {
-            text-align: center;
-            padding: 1rem;
-            color: #666;
-            font-style: italic;
-        }
-
-        .btn-volver {
-            display: inline-block;
-            margin-top: 1rem;
-            padding: 0.6rem 1.2rem;
-            background: #4a90e2;
-            color: white;
-            border-radius: 8px;
-            text-decoration: none;
-        }
-
-        .btn-volver:hover {
-            background: #357ABD;
-        }
-
-        /* Estilos para la imagen de comida */
-        .imagen-comida {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 6px;
-            border: 1px solid #ddd;
-        }
-
-        .imagen-placeholder {
-            width: 60px;
-            height: 60px;
-            background-color: #f1f5f9;
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #888;
-            font-size: 12px;
-            text-align: center;
-            border: 1px dashed #ccc;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Historial de Comidas</h1>
-    </header>
+{% block content %}
 
     <div class="container">
         <h2>Usuario: {{ usuario.nombre }}</h2>
@@ -152,5 +54,6 @@
             <a href="{{ url_for('views.index') }}" class="btn-volver">Volver al Dashboard</a>
         </div>
     </div>
-</body>
-</html>
+
+{% endblock %}
+{% block scripts %} {% endblock %}

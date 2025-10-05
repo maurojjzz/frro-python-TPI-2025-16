@@ -3,8 +3,38 @@ body {
   margin: 0;
   padding: 0;
   background-color: #f9fafb;
+  position: relative;
+}
+.navbar{
+  z-index: 10;
 }
 
+.logo {
+  display: flex;
+  align-items: center;
+  height: 60px;
+  width: 120px;
+  padding: 0;
+  margin: 0;
+}
+.logo img {
+  max-height: 60px;
+  width: auto;
+  display: block;
+  margin: 0 auto;
+}
+.main-box-base{
+  display: flex;
+  flex-direction: column;
+  flex-grow: grow;
+  max-width: 1320px;
+  height: 100dvh;
+  width: 100%;
+  padding-top: 40px;
+  padding-bottom: 20px;
+  position: absolute;
+  top: 0;
+}
 .main-box {
   display: flex;
   flex-direction: column;

@@ -1,17 +1,8 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Home</title>
-    
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/home_page.css') }}">
-</head>
-<body>
-    <div class="container">
-        <h1>Home</h1>
-        
-        <a href="{{ url_for('views.register') }}">Registrarse</a>
-        <a href="{{ url_for('views.login') }}">Iniciar sesión</a>
-    </div>
-</body>
-</html>
+{% extends "base.html" %} {% block content %}
+<div class="container">
+  <h1>Home</h1>
+
+  <a href="{{ url_for('views.register') }}">Registrarse</a>
+  <a href="{{ url_for('views.login') }}">Iniciar sesión</a>
+</div>
+{% endblock %} {% block scripts %} {% endblock %}

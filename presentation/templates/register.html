@@ -1,25 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Registro</title>
-</head>
-<body>
-    <h1>Registro de Usuario</h1>
-    <form action="{{ url_for('views.register') }}" method="POST">
-        <label>Nombre:</label>
-        <input type="text" name="nombre" required><br>
+{% extends "base.html" %} 
 
-        <label>Apellido:</label>
-        <input type="text" name="apellido" required><br>
+{% block title %}
+Registro de Usuario
+{% endblock %}
 
-        <label>Email:</label>
-        <input type="email" name="email" required><br>
+{% block content %}
+<h1>Registro de Usuario</h1>
+<form action="{{ url_for('views.register') }}" method="POST">
+  <label>Nombre:</label>
+  <input type="text" name="nombre" required /><br />
 
-        <label>Contraseña:</label>
-        <input type="password" name="contrasena" required><br>
+  <label>Apellido:</label>
+  <input type="text" name="apellido" required /><br />
 
-        <button type="submit">Registrar</button>
-    </form>
-</body>
-</html>
+  <label>Email:</label>
+  <input type="email" name="email" required /><br />
+
+  <label>Contraseña:</label>
+  <input type="password" name="contrasena" required /><br />
+
+  <button type="submit">Registrar</button>
+</form>
+{% endblock %} 
+
+
+{% block scripts %} {% endblock %}

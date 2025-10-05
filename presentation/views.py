@@ -93,7 +93,6 @@ def login ():
     return render_template('login.html')
 
 @views_bp.route('/register', methods=['GET', 'POST'])
-
 def register():
     if request.method == 'POST':
         nombre = request.form['nombre']
