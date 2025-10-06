@@ -59,7 +59,7 @@
               </li>
               {% if usuario %}
               <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('views.logout') }}">Cerrar Sesión ({{ usuario }})</a>
+                <a class="nav-link text-danger" href="{{ url_for('views.logout') }}">Cerrar Sesión({{ usuario['email'] }})</a>
               </li>
               {% else %}
               <li class="nav-item">

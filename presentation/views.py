@@ -25,8 +25,12 @@ def subir_imagen():
         return jsonify({"success": False, "error": "No se ha proporcionado ninguna imagen"}), 400
 
     file = request.files['imagen']
-
-    id_usuario = 1  # es temporal dsp lo sacamos del token si esta loguedo
+    
+    usuario = session.get('usuario')
+    if not usuario:
+        return jsonify({"success": False, "error": "Usuario no autenticado"}), 401
+    
+    id_usuario = usuario['id']
 
     resultado_subida = subir_imagen_controller(file, id_usuario)
 
@@ -101,7 +105,7 @@ def register():
            
             return redirect(url_for('views.login'))
         else:
-           
+            print(f"Error al registrar usuario: {resultado['error']}")
             status_code = 400 if "correo" in resultado['error'] else 500
             return render_template('register.html', error=resultado['error']), status_code
 

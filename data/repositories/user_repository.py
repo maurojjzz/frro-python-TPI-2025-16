@@ -1,7 +1,8 @@
-from sqlalchemy.orm import  joinedload
+from sqlalchemy.orm import joinedload
 from data.models import Usuario
 
 from data.database import SessionLocal
+
 
 def insertar_usuario(usuario: Usuario):
     db = SessionLocal()
@@ -10,22 +11,30 @@ def insertar_usuario(usuario: Usuario):
         db.commit()
         db.refresh(usuario)
         return usuario
-    except:
+    except Exception as e:
         db.rollback()
-        raise
+        raise Exception(f"No se pudo insertar el usuario: {str(e)}")
     finally:
         db.close()
 
 
 def validoMailUser(email):
-    db=SessionLocal()
+    db = SessionLocal()
     try:
-        return db.query(Usuario).filter(Usuario.email == email).first() #Devuelve un usuario si hay mail coincidente sino devuelve None
+        if not email or not isinstance(email, str):
+            return None
+        email = email.strip().lower()
+        usuario = db.query(Usuario).filter(Usuario.email == email).first()
+        return usuario
+    except Exception as e:
+        import logging
+        logging.error(f"Error al validar email de usuario: {e}")
+        return None
     finally:
         db.close()
 
 def getComidaUsuario(idUser):
-    db=SessionLocal()
+    db = SessionLocal()
     try:
         usuario = (
     db.query(Usuario)
