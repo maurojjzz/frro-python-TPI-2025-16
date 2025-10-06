@@ -1,26 +1,40 @@
 {% extends "base.html" %} 
 
 {% block title %}
-Registro de Usuario
+Registro de Usuario | Mi PlatoIA
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}" />
 {% endblock %}
 
 {% block content %}
-<h1>Registro de Usuario</h1>
-<form action="{{ url_for('views.register') }}" method="POST">
-  <label>Nombre:</label>
-  <input type="text" name="nombre" required /><br />
+<div class="register-container">
+  <div class="form rounded shadow-lg border">
+    <h1 class="mt-4">Registro de Usuario</h1>
+    <form action="{{ url_for('views.register') }}" method="POST">
+      <div>
+        <label>Nombre:</label>
+        <input type="text" name="nombre" required /><br />
+      </div>
+      <div>
+        <label>Apellido:</label>
+        <input type="text" name="apellido" required /><br />
+      </div>
+      <div>
+        <label>Email:</label>
+        <input type="email" name="email" required /><br />
+      </div>
+      <div>
+        <label>Contraseña:</label>
+        <input type="password" name="contrasena" required /><br />
+      </div>
 
-  <label>Apellido:</label>
-  <input type="text" name="apellido" required /><br />
-
-  <label>Email:</label>
-  <input type="email" name="email" required /><br />
-
-  <label>Contraseña:</label>
-  <input type="password" name="contrasena" required /><br />
-
-  <button type="submit">Registrar</button>
-</form>
+      <button type="submit">Registrar</button>
+      <p class="text-center">¿Ya tienes una cuenta? <a href="{{ url_for('views.login') }}">Inicia sesión aquí</a></p>
+    </form>
+  </div>
+</div>
 {% endblock %} 
 
 

@@ -12,12 +12,7 @@ views_bp = Blueprint('views', __name__)
 
 load_dotenv()
 
-
 @views_bp.route('/')
-def home():
-    return render_template('home.html')
-
-@views_bp.route('/index')
 def index():
     api_url = os.getenv('API_URL')
     usuario = session.get('usuario')
