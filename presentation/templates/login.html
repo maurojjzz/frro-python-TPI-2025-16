@@ -25,11 +25,39 @@ Iniciar Sesion | Mi PlatoIA
       <button type="submit">Iniciar Sesión</button>
       <p class="">¿No tienes una cuenta? <a href="{{ url_for('views.register') }}">Regístrate aquí</a></p>
     </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div id="toast" class="toast-container position-fixed  p-3" style="z-index: 11; top: 60px;">
+        {% for category, message in messages %}
+          <div class="toast align-items-center text-bg-{{ 'danger' if category == 'error' else 'success' }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+              <div class="toast-body text-white">
+                {{ message }}
+              </div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %} 
   </div>
+  
+  
   {% include "shared/loading.html" %}
 </div>
 {% endblock %}
  
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/loadingWholePage.js') }}"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const toastElList = document.querySelectorAll('.toast');
+    toastElList.forEach((toastEl) => {
+      const toast = new bootstrap.Toast(toastEl, { delay: 5000 }); 
+      toast.show();
+    });
+  });
+</script>
 {% endblock %}
