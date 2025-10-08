@@ -1,0 +1,63 @@
+{% extends "base.html" %} 
+
+{% block title %}
+Iniciar Sesion | Mi PlatoIA
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css') }}" />
+{% endblock %}
+
+{% block content %}
+<div class="login-container">
+  <div class="form rounded shadow-lg border">
+    <h1 class="mt-3">Iniciar Sesión</h1>
+    <form action="{{ url_for('views.login') }}" method="POST">
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" name="email" required />
+      </div>
+      <div>
+          <label for="contrasena">Contraseña:</label>
+          <input type="password" name="contrasena" required />
+      </div>
+      <button type="submit">Iniciar Sesión</button>
+      <p class="">¿No tienes una cuenta? <a href="{{ url_for('views.register') }}">Regístrate aquí</a></p>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div id="toast" class="toast-container position-fixed  p-3" style="z-index: 11; top: 60px;">
+        {% for category, message in messages %}
+          <div class="toast align-items-center text-bg-{{ 'danger' if category == 'error' else 'success' }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+              <div class="toast-body text-white">
+                {{ message }}
+              </div>
+              <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %} 
+  </div>
+  
+  
+  {% include "shared/loading.html" %}
+</div>
+{% endblock %}
+ 
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/loadingWholePage.js') }}"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const toastElList = document.querySelectorAll('.toast');
+    toastElList.forEach((toastEl) => {
+      const toast = new bootstrap.Toast(toastEl, { delay: 5000 }); 
+      toast.show();
+    });
+  });
+</script>
+{% endblock %}

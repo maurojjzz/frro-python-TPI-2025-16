@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block title %}
+Historial de Comidas
+{% endblock %}
+
+{% block content %}
+
+    <div class="container">
+        <h2>Usuario: {{ usuario.nombre }}</h2>
+
+        {% if usuario.comidas and usuario.comidas|length > 0 %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Imagen</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Calorías</th>
+                        <th>Grasas</th>
+                        <th>Proteínas</th>
+                        <th>Carbohidratos</th>
+                        <th>Fecha de consumo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for comida in usuario.comidas %}
+                        <tr>
+                            <td>
+                                {% if comida.imagen %}
+                                    <img src="{{ comida.imagen }}" alt="{{ comida.nombre }}" class="imagen-comida">
+                                {% else %}
+                                    <div class="imagen-placeholder">
+                                        Sin imagen
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td>{{ comida.nombre }}</td>
+                            <td>{{ comida.descripcion }}</td>
+                            <td>{{ comida.calorias }}</td>
+                            <td>{{ comida.grasas }}</td>
+                            <td>{{ comida.proteinas }}</td>
+                            <td>{{ comida.carbohidratos }}</td>
+                            <td>{{ comida.fecha_consumo.strftime('%d/%m/%Y') if comida.fecha_consumo else '-' }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="mensaje">No tienes comidas registradas aún 🍽️</p>
+        {% endif %}
+
+        <div style="text-align: center;">
+            <a href="{{ url_for('views.index') }}" class="btn-volver">Volver al Dashboard</a>
+        </div>
+    </div>
+
+{% endblock %}
+{% block scripts %} {% endblock %}

@@ -1,0 +1,72 @@
+{% extends "base.html" %} 
+
+{% block title %}
+Registro de Usuario | Mi PlatoIA
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}
+" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css') }}" />
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+  <div class="form rounded shadow-lg border">
+    <h1 class="mt-4">Registro de Usuario</h1>
+    <form action="{{ url_for('views.register') }}" method="POST">
+      <div>
+        <label>Nombre:</label>
+        <input type="text" name="nombre" required /><br />
+      </div>
+      <div>
+        <label>Apellido:</label>
+        <input type="text" name="apellido" required /><br />
+      </div>
+      <div>
+        <label>Email:</label>
+        <input type="email" name="email" required /><br />
+      </div>
+      <div>
+        <label>Contraseña:</label>
+        <input type="password" name="contrasena" required /><br />
+      </div>
+
+      <button type="submit">Registrar</button>
+      <p class="text-center">¿Ya tienes una cuenta? <a href="{{ url_for('views.login') }}">Inicia sesión aquí</a></p>
+    </form>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div id="toast" class="toast-container position-fixed p-3" style="z-index: 1100; top: 60px;">
+          {% for category, message in messages %}
+            <div class="toast align-items-center text-bg-{{ 'danger' if category == 'error' else 'success' }} border-0" role="alert" aria-live="assertive" aria-atomic="true">
+              <div class="d-flex">
+                <div class="toast-body text-white">
+                  {{ message }}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+  </div>
+  {% include "shared/loading.html" %}
+</div>
+{% endblock %} 
+
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/loadingWholePage.js') }}"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const toastElList = document.querySelectorAll('.toast');
+    toastElList.forEach((toastEl) => {
+      const toast = new bootstrap.Toast(toastEl, { delay: 4000 });
+      toast.show();
+    });
+  });
+</script>
+{% endblock %}

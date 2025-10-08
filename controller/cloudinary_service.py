@@ -9,12 +9,12 @@ def subir_imagen_a_cloudinary(imagen, id_usuario):
     """Sube una imagen a Cloudinary y devuelve la URL"""
     try:
         timestamp = int(datetime.now().timestamp())
-        public_id = f"usuario/{id_usuario}/comidas/comida_{timestamp}"
+        public_id = f"comida_{timestamp}"
         
         resultado = cloudinary.uploader.upload(
             imagen,
             public_id=public_id,
-            folder="mi_plato_ia",
+            folder=f"mi_plato_ia/user_{id_usuario}",
             overwrite=False,
             resource_type="image",
             transformation=[{'quality': 'auto', 'fetch_format': 'auto'},

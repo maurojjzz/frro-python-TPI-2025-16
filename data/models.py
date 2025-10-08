@@ -8,7 +8,7 @@ class Usuario(Base):
     nombre = Column(String(50), nullable=False)
     apellido = Column(String(50), nullable=False)
     email = Column(String(50), nullable=False)
-    contrasena = Column(String(50), nullable=False)
+    contrasena = Column(Text, nullable=False)
     comidas = relationship("Comida", back_populates="usuario")
     
     
