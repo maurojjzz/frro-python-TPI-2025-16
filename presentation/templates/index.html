@@ -1,4 +1,9 @@
 {% extends "base.html" %}
+
+{% block extra_css%}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css') }}" />
+{% endblock %}
+
 {% block content %}
     <div class="container-fluid main-box text-center ">
       <h2 class="titulo">Sistema Nutricional</h2>
@@ -45,6 +50,7 @@
           </div>
         </div>
       </div>
+      {% include "shared/loading.html" %}
     </div>
 {% endblock %}
 
@@ -53,4 +59,5 @@
   window.API_URL = "{{ api_url }}";
 </script>
 <script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+<script src="{{ url_for('static', filename='js/loadingWholePage.js') }}"></script>
 {% endblock %}

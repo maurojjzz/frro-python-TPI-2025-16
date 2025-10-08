@@ -6,6 +6,7 @@ Iniciar Sesion | Mi PlatoIA
 
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/login.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css') }}" />
 {% endblock %}
 
 {% block content %}
@@ -25,6 +26,10 @@ Iniciar Sesion | Mi PlatoIA
       <p class="">¿No tienes una cuenta? <a href="{{ url_for('views.register') }}">Regístrate aquí</a></p>
     </form>
   </div>
+  {% include "shared/loading.html" %}
 </div>
-{% endblock %} 
-{% block scripts %} {% endblock %}
+{% endblock %}
+ 
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/loadingWholePage.js') }}"></script>
+{% endblock %}

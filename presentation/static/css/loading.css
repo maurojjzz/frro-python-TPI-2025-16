@@ -1,0 +1,22 @@
+.loading-container{
+    position: absolute;
+    top: 57px;
+    left: 0;
+    height: calc(100% - 57px);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+}
+
+.spinner-border{
+    width: 12rem;
+    height: 12rem;
+    border-width: 2em;
+    color: #4caf50 !important;
+}
+
+.loading-hidden{
+    display: none !important;
+}

@@ -5,7 +5,9 @@ Registro de Usuario | Mi PlatoIA
 {% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/register.css') }}
+" />
+<link rel="stylesheet" href="{{ url_for('static', filename='css/loading.css') }}" />
 {% endblock %}
 
 {% block content %}
@@ -34,8 +36,11 @@ Registro de Usuario | Mi PlatoIA
       <p class="text-center">¿Ya tienes una cuenta? <a href="{{ url_for('views.login') }}">Inicia sesión aquí</a></p>
     </form>
   </div>
+  {% include "shared/loading.html" %}
 </div>
 {% endblock %} 
 
 
-{% block scripts %} {% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/loadingWholePage.js') }}"></script>
+{% endblock %}
