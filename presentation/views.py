@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, jsonify, request, redirect, url_for, session, flash
 import os
 from dotenv import load_dotenv
+from controller.consumo_controller import ConsumoController
 from controller.imagen import subir_imagen_controller
 from controller.fat_secret import reconocer_imagen, procesar_datos_fasecret
 from controller.generador_titulo import extraer_nombres_de_fatsecret, generar_titulo_con_openai
@@ -129,3 +130,21 @@ def logout():
     session.clear()
     flash('Has cerrado sesión exitosamente.', 'success')
     return redirect(url_for('views.login'))
+
+
+@views_bp.route('/inicializar-historial')
+def inicializar_historial():
+    usuario = session.get('usuario')
+    if not usuario:
+        return jsonify({"error": "No autenticado"}), 401
+    
+    try:
+        # ✅ INICIALIZAR TODO EL HISTORIAL DEL USUARIO
+        semanas = ConsumoController.inicializar_consumos_historicos(usuario['id'])
+
+        print(f'✅ Historial inicializado: {len(semanas)} semanas procesadas')
+        return redirect(url_for('views.index'))
+        
+    except Exception as e:
+        print(f'❌ Error al inicializar historial: {str(e)}')
+        return redirect(url_for('views.index'))
