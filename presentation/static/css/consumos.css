@@ -1,0 +1,68 @@
+
+body{
+    font-family: "Poppins", sans-serif;
+}
+
+.titulo{
+    text-align: center;
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.container{
+    margin-top: 50px;
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.titulo-seccion{
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.consumos-diarios{
+    width: 800px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 100px;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
+.consumos-semana{
+    width: 800px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 100px;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
+.fechas-rango{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+label{
+    font-size: 14px;
+    color: #666;
+    margin-top: 10px;
+}

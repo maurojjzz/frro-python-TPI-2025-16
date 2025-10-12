@@ -129,3 +129,12 @@ def logout():
     session.clear()
     flash('Has cerrado sesión exitosamente.', 'success')
     return redirect(url_for('views.login'))
+
+@views_bp.route('/consumos', methods=['GET'])
+def consumos():
+    #usuario = session.get('usuario')
+    #if not usuario:
+    #    flash('Por favor, inicia sesión para ver tus consumos diarios.', 'warning')
+    #    return redirect(url_for('views.login'))
+   # return render_template('consumos.html', usuario=usuario)
+   return render_template('consumos.html')

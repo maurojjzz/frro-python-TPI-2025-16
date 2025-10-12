@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Consumos Diarios{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/consumos.css') }}">
+
+{% endblock %}    
+
+{% block content %}
+<div class="titulo">
+    <h1>Consumos de {{usuario}}</h1>
+</div>
+
+<div class="container">
+    <div class="consumos-diarios">
+        <div class="titulo-seccion">
+            <h1>Consumos Diarios</h1>
+        </div>
+        <p>Selecciona una fecha:</p>
+        <form method="POST" action="/buscar">
+            <input type="date" name="fecha" required>
+            <button type="submit">Buscar</button>
+        </form>
+    </div>
+    <div class="consumos-semana">
+        <div class="titulo-seccion">
+            <h1>Consumos Semanales</h1>
+        </div>
+        <p>Rango de fechas</p>
+        <form method="POST" action="/buscar_rango">
+            <div class="fechas-rango">
+                <input type="date" name="fecha_inicio" required>
+                <span> a </span>
+                <input type="date" name="fecha_fin" required>
+                <button type="submit">Buscar</button>
+            </div>
+                <label> Ingresar un rango de 7 dias maximo</label>
+        </form>
+    </div>
+</div>
+{% endblock %}
