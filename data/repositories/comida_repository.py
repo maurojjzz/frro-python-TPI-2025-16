@@ -62,3 +62,12 @@ class ComidaRepository:
             ]
         finally:
             db.close()
+            
+    @staticmethod
+    def traer_ultimas_tres_comidas(usuario_id:int):
+        db = SessionLocal()
+        try:
+            comidas = db.query(Comida).filter(Comida.usuario_id == usuario_id).order_by(Comida.fecha_consumo.desc()).limit(3).all()
+            return comidas
+        finally:
+            db.close()

@@ -6,6 +6,7 @@ from controller.imagen import subir_imagen_controller
 from controller.fat_secret import reconocer_imagen, procesar_datos_fasecret
 from controller.generador_titulo import extraer_nombres_de_fatsecret, generar_titulo_con_openai
 from controller.comida import crear_comida
+from data.repositories.comida_repository import ComidaRepository
 from controller.user_controller import registrar_usuario, obtener_historial_comidas
 from controller.login_controller import login_usuario
 
@@ -18,7 +19,13 @@ load_dotenv()
 def index():
     api_url = os.getenv('API_URL')
     usuario = session.get('usuario')
-    return render_template('index.html', api_url=api_url, usuario=usuario)
+    ultimas_comidas = []
+    if usuario:
+        try:
+            ultimas_comidas = ComidaRepository.traer_ultimas_tres_comidas(usuario['id']) or []
+        except Exception:
+            ultimas_comidas = []
+    return render_template('index.html', api_url=api_url, usuario=usuario, ultimas_comidas=ultimas_comidas)
 
 
 @views_bp.route('/login', methods=['GET', 'POST'])
