@@ -1,0 +1,49 @@
+{% if ultimas_comidas == [] %}
+<p class="mt-2 subt">Aquí aparecerán los resultados del análisis</p>
+{% else %}
+<div class="cuadro-comidas ">
+  <div class="comida-item-box d-flex flex-row justify-content-around align-items-center">
+    {% for comida in ultimas_comidas %}
+
+    <div class="{% if ultimas_comidas|length > 2 %} comida-item-contenido {% else %} comida-item-contenido-dos {% endif %} border p-2 rounded">
+
+      <div class="imagen-hist-box border">
+        <img src="{{ comida.imagen_url }}" alt="Imagen de la comida" class="img-fluid rounded imagen-hist" />
+      </div>
+
+      <div class="informacion-hist-box d-flex flex-column align-items-start justify-content-center flex-grow-1">
+        <p class="nombre-comida text-start">{{ comida.nombre }}</p>
+        <p class="fecha-comida mb-2">Fecha: {{ comida.fecha_consumo }}</p>
+        <div class="hist-val-nut">
+           <div>
+              <p class="nro-valor fw-bold fs-5 text-success">{{ comida.calorias }}</p>
+              <p class="info-sub-sub">Calorias(kcal)</p>
+            </div>
+            <div>
+              <p class="nro-valor fw-bold fs-5 sgundo-sub">{{ comida.proteinas }}</p>
+              <p class="info-sub-sub">Proteinas(g)</p>
+            </div>
+            <div>
+              <p class="nro-valor fw-bold fs-5 trcer-sub">{{ comida.grasas }}</p>
+              <p class="info-sub-sub">Grasas(g)</p>
+            </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="comida-item-boton">
+    <button
+      type="button"
+      class="btn border boton-ver-todas"
+      data-bs-toggle="tooltip"
+      data-bs-placement="top"
+      title="Ver historial completo"
+      onclick="window.location.href='{{ url_for('views.historial_comidas') }}'"
+    >
+      <i class="fa-solid fa-clock-rotate-left historial"></i>
+    </button>
+  </div>
+</div>
+{% endif %}

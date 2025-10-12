@@ -139,6 +139,19 @@ def logout():
     return redirect(url_for('views.login'))
 
 
+@views_bp.route('/obtener-historial-html')
+def obtener_historial_html():
+    usuario = session.get('usuario')
+    if not usuario:
+        return jsonify({"error": "No autenticado"}), 401
+    
+    try:
+        ultimas_comidas = ComidaRepository.traer_ultimas_tres_comidas(usuario['id']) or []
+        return render_template('partials/historial_partial.html', ultimas_comidas=ultimas_comidas)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 @views_bp.route('/inicializar-historial')
 def inicializar_historial():
     usuario = session.get('usuario')
