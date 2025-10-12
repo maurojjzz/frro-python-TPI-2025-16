@@ -208,7 +208,7 @@ class ConsumoController:
         plt.tight_layout()
         
         # Guardar la imagen en static
-        ruta_grafico = 'presentation/static/images/grafico_barras.png'
+        ruta_grafico = 'presentation/static/images/graficos/grafico_barras.png'
         plt.savefig(ruta_grafico)
         plt.close()
 
@@ -220,7 +220,7 @@ class ConsumoController:
         plt.axis('equal')
 
         # Guardar la imagen en static
-        ruta_grafico_torta = 'presentation/static/images/grafico_torta.png'
+        ruta_grafico_torta = 'presentation/static/images/graficos/grafico_torta.png'
         plt.savefig(ruta_grafico_torta)
         plt.close()
 
