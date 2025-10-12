@@ -12,7 +12,6 @@ body{
 }
 
 .container-opciones{
-    background-color: aqua;
     width: auto;
     height: auto;
     display: flex;
@@ -31,7 +30,6 @@ body{
 
 .consumos-diarios{
     height: 200px;
-    background-color: bisque;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -41,7 +39,6 @@ body{
 
 .consumos-semana{
     height: 200px;
-    background-color: burlywood;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -63,7 +60,6 @@ label{
     margin-top: 10px;
 }
 .graficos{
-    background-color: aquamarine;
     width: auto;
     height: auto;
     display: grid;
@@ -77,25 +73,17 @@ label{
 .grafico-torta,
 .grafico-plot,
 .comida-mas-calorias {
-    width: 400px;
+    width: 600px;
     height: 400px;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.grafico-barras {
-    background-color: beige;
-}
 
-.grafico-torta {
-    background-color: blanchedalmond;
-}
-
-.grafico-plot {
-    background-color: blueviolet;
-}
-
-.comida-mas-calorias {
-    background-color: brown;
+/*Quiero que las imagenes abarquen el tamaño de su container y nada mas*/
+img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }

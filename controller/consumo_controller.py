@@ -2,8 +2,17 @@ from datetime import datetime, timedelta
 from turtle import pd
 from data.repositories.consumo_repository import ConsumoRepository
 from data.repositories.comida_repository import ComidaRepository
-import pandas as pd
+import pandas as pds
+
+#Evitar error de tkinter con graficos matplotlib
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+
+
 
 
 class ConsumoController:
@@ -167,6 +176,7 @@ class ConsumoController:
 #Generacion de graficos
     @staticmethod
     def generar_graficos(usuario_id: int, fecha_str: str):
+        sns.set_theme(style="darkgrid")  # aplica estilo Seaborn a Matplotlib
         try:
             # Convertimos el string recibido a datetime solo acá
             fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
@@ -179,7 +189,7 @@ class ConsumoController:
             return "No hay datos para esa fecha"
 
         # Crear DataFrame con los valores
-        df = pd.DataFrame([{
+        df = pds.DataFrame([{
             'Proteínas': consumo.proteinas,
             'Grasas': consumo.grasas,
             'Carbohidratos': consumo.carbohidratos,
@@ -189,8 +199,10 @@ class ConsumoController:
 
         # Generar gráfico de barras
         plt.figure(figsize=(10, 6))
-        plt.bar(df.columns, df.iloc[0], color=['blue', 'orange', 'green', 'red', 'purple'])
+        plt.bar(df.columns, df.iloc[0])
         plt.title(f'Consumo Diario - {fecha}')
+        plt.axhline(y=2000, color='r', linestyle='--', label='Objetivo Calórico (2000 kcal)')
+        plt.legend()
         plt.ylabel('Cantidad')
         plt.xlabel('Macronutrientes')
         plt.tight_layout()
@@ -200,4 +212,17 @@ class ConsumoController:
         plt.savefig(ruta_grafico)
         plt.close()
 
+        # Generar grafico de torta con proteinas, grasas y carbohidratos
+        torta_df = df[['Proteínas', 'Grasas', 'Carbohidratos']]
+        plt.figure(figsize=(8, 8))
+        plt.pie(torta_df.iloc[0], labels=torta_df.columns, autopct='%1.1f%%', startangle=140)
+        plt.title(f'Consumo Diario - {fecha}')
+        plt.axis('equal')
+
+        # Guardar la imagen en static
+        ruta_grafico_torta = 'presentation/static/images/grafico_torta.png'
+        plt.savefig(ruta_grafico_torta)
+        plt.close()
+
+        #Generar grafico de lineas de calorias en la semana
         return "Gráfico generado correctamente"

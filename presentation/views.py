@@ -177,7 +177,7 @@ def buscar_consumo():
     usuario = session.get('usuario')
 
     # Llama al controlador (ahí se convierte la fecha)
-    resultado = ConsumoController.generar_graficos(usuario, fecha_str)
+    resultado = ConsumoController.generar_graficos(usuario['id'], fecha_str)
 
     if resultado == "No hay datos para esa fecha":
         return render_template('consumos.html', usuario=usuario, error=resultado)
@@ -188,5 +188,7 @@ def buscar_consumo():
         'consumos.html',
         usuario=usuario,
         fecha=fecha_str,
-        grafico_barras=ruta_grafico
+        grafico_barras=ruta_grafico,
+        grafico_torta='images/grafico_torta.png',
+        grafico_lineas='images/grafico_lineas.png'
     )

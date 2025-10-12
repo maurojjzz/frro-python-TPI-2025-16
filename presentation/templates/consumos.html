@@ -53,7 +53,11 @@
         </div>
         <div class="grafico-torta">
             <h2>Gráfico de Torta</h2>
-            <img src="" alt="grafico-torta">
+            {% if grafico_torta %}
+                <img src="{{ url_for('static', filename=grafico_torta) }}" alt="grafico-torta">
+            {% elif error %}
+                <p>{{ error }}</p>
+            {% endif %}
         </div>
         <div class="grafico-plot">
             <h2>Gráfico de Dispersión</h2>
