@@ -12,12 +12,11 @@
     <h1>Consumos de {{usuario}}</h1>
 </div>
 
-<div class="container">
+<div class="container-opciones">
     <div class="consumos-diarios">
         <div class="titulo-seccion">
-            <h1>Consumos Diarios</h1>
+            <h1>Buscar por fecha</h1>
         </div>
-        <p>Selecciona una fecha:</p>
         <form method="POST" action="/buscar">
             <input type="date" name="fecha" required>
             <button type="submit">Buscar</button>
@@ -25,9 +24,8 @@
     </div>
     <div class="consumos-semana">
         <div class="titulo-seccion">
-            <h1>Consumos Semanales</h1>
+            <h1>Buscar por rango de fechas</h1>
         </div>
-        <p>Rango de fechas</p>
         <form method="POST" action="/buscar_rango">
             <div class="fechas-rango">
                 <input type="date" name="fecha_inicio" required>
@@ -37,6 +35,38 @@
             </div>
                 <label> Ingresar un rango de 7 dias maximo</label>
         </form>
+    </div>
+</div>
+
+<div class="container">
+    <div class="titulo-seccion">
+        <h1>Graficos</h1>
+    </div>
+    <div class="graficos">
+        <div class="grafico-barras">
+            <h2>Gráfico de Barras</h2>
+            {% if grafico_barras %}
+                <img src="{{ url_for('static', filename=grafico_barras) }}" alt="grafico-barras">
+            {% elif error %}
+                <p>{{ error }}</p>
+            {% endif %}
+        </div>
+        <div class="grafico-torta">
+            <h2>Gráfico de Torta</h2>
+            <img src="" alt="grafico-torta">
+        </div>
+        <div class="grafico-plot">
+            <h2>Gráfico de Dispersión</h2>
+            <img src="" alt="grafico-plot">
+
+        </div>
+        <div class="comida-mas-calorias">
+            <h2>Comida más Calórica</h2>
+            <img src="" alt="comida-mas-calorias">
+        </div>
+    </div>
+    <div class="comidas-dia">
+        
     </div>
 </div>
 {% endblock %}

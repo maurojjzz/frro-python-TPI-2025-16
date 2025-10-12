@@ -18,7 +18,7 @@ body {
 
 .header {
   background-color: #ffffff !important;
-  width: 100vw;
+  width: 98vw;
   display: flex;
   justify-content: center;
 }
@@ -45,7 +45,7 @@ body {
   flex-grow: grow;
   max-width: 1320px;
   height: 100dvh;
-  width: 100vw;
+  width: 98vw;
   padding-top: 40px;
   padding-bottom: 20px;
   position: absolute;
@@ -57,7 +57,7 @@ body {
   flex-grow: grow;
   max-width: 1320px;
   height: 100dvh;
-  padding-top: 40px;
+  padding-top: 20px;
   padding-bottom: 20px;
 }
 
@@ -109,8 +109,10 @@ body {
 .resultBox {
   display: flex;
   flex-direction: column;
-  height: 250px;
+  min-height: 290px;
+  height: auto;
   border-radius: 15px;
+  padding-bottom: 15px;
 }
 .resultBox h4 {
   font-weight: 600;
@@ -230,17 +232,113 @@ i.analisis {
   background-color: #ffffff;
 }
 
+.cuadro-comidas {
+  display: flex;
+  flex-direction: row;
+  flex-grow: 1;
+  padding: 0;
+}
+
+.comida-item-box {
+  height: fit-content;
+  flex-grow: 1;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.comida-item-contenido {
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+  height: 100%;
+  width: 260px;
+}
+
+.comida-item-contenido-dos{
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+  height: 100%;
+  width: 360px;
+}
+
+.nombre-comida{
+  font-size: 0.9rem;
+  font-weight: 400;
+  color: #333;
+  margin: 0;
+}
+.fecha-comida{
+  font-size: 0.7rem;
+  color: #666;
+  margin: 0;
+}
+
+.comida-item-boton {
+  justify-self: center;
+  flex-shrink: 1;
+  width: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.boton-ver-todas {
+  background-color: #d3d7dd;
+  border-radius: 8px;
+  padding: 20px;
+  transition: background-color 0.5s;
+}
+
+.boton-ver-todas:hover {
+  background-color: #a9afb6;
+  border-radius: 8px;
+  color: white;
+}
+
+i.historial {
+  font-size: 60px;
+  color: #f9fafb;
+}
+
+.imagen-hist-box{
+  height: 110px;
+  width: 97%;
+
+}
+
+.imagen-hist{
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.hist-val-nut{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  flex-grow: 1;
+}
+
+.hist-val-nut div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.hist-val-nut div .nro-valor{
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+}
+
 @media (max-width: 690px) {
   .first-block {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
   }
-
-  .second-block {
-    margin-bottom: 50px;
-  }
-
   .navbar {
     z-index: 10;
     height: 60px;
@@ -255,5 +353,58 @@ i.analisis {
   }
   .cont-header {
     background-color: white !important;
+  }
+  .cuadro-comidas {
+    flex-direction: column;
+  }
+
+  .second-block {
+    margin-bottom: 50px;
+    height: auto;
+  }
+
+  .resultBox {
+    height: auto;
+  }
+
+  .comida-item {
+    height: 500px;
+  }
+  .comida-item-boton {
+    width: 100%;
+    margin-bottom: 15px;
+  }
+  .boton-ver-todas {
+    background-color: #d3d7dd;
+    width: 80%;
+    height: 60px;
+    transition: background-color 0.5s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  i.historial {
+    font-size: 50px;
+    color: #f9fafb;
+  }
+  .comida-item-box{
+    flex-direction: column !important;
+    margin-bottom: 15px;
+  }
+
+  .comida-item-contenido{
+    width: 80% !important;
+  }
+}
+
+@media (max-width: 1080px) {
+  .comida-item-box .comida-item-contenido:nth-child(3) {
+    display: none;
+  }
+}
+
+@media (max-width: 749px) {
+  .comida-item-box .comida-item-contenido:nth-child(3) {
+    display: block;
   }
 }

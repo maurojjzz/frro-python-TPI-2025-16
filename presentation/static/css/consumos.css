@@ -11,8 +11,8 @@ body{
     color: #333;
 }
 
-.container{
-    margin-top: 50px;
+.container-opciones{
+    background-color: aqua;
     width: auto;
     height: auto;
     display: flex;
@@ -30,32 +30,28 @@ body{
 }
 
 .consumos-diarios{
-    width: 800px;
-    height: 400px;
+    height: 200px;
+    background-color: bisque;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     margin: 100px;
-    border: 2px solid black;
-    border-radius: 5px;
 }
 
 .consumos-semana{
-    width: 800px;
-    height: 400px;
+    height: 200px;
+    background-color: burlywood;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
     margin: 100px;
-    border: 2px solid black;
-    border-radius: 5px;
 }
 
 .fechas-rango{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
     gap: 10px;
@@ -65,4 +61,41 @@ label{
     font-size: 14px;
     color: #666;
     margin-top: 10px;
+}
+.graficos{
+    background-color: aquamarine;
+    width: auto;
+    height: auto;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 50px;
+}
+.grafico-barras,
+.grafico-torta,
+.grafico-plot,
+.comida-mas-calorias {
+    width: 400px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.grafico-barras {
+    background-color: beige;
+}
+
+.grafico-torta {
+    background-color: blanchedalmond;
+}
+
+.grafico-plot {
+    background-color: blueviolet;
+}
+
+.comida-mas-calorias {
+    background-color: brown;
 }

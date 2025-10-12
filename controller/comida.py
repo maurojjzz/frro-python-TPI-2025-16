@@ -3,6 +3,8 @@ from data.database import SessionLocal
 from datetime import datetime
 from sqlalchemy.orm import Session
 
+from controller.consumo_controller import ConsumoController
+
 
 def crear_comida(datos: dict) -> dict:
     try:
@@ -23,6 +25,8 @@ def crear_comida(datos: dict) -> dict:
         db.commit()
         db.refresh(nueva_comida)
         db.close()
+        
+        ConsumoController.actualizar_consumo_diario(datos["usuario_id"], datetime.now().date())
 
         return {
             "success": True,

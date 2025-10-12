@@ -72,6 +72,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // aca la logica del cuadro analisis nutricional
         updateAnalysisBox(data);
+        
+        // Actualizar el historial nutricional usando Jinja2
+        updateHistorialNutricional();
       } else {
         alert("Error al subir la imagen", data?.error);
       }
@@ -235,3 +238,26 @@ const sumarValoresNutricionales = (f_data) => {
     colesterol: Math.round(total.colesterol * 10) / 10,
   };
 };
+
+async function updateHistorialNutricional() {
+  try {
+    const response = await fetch(`${API_URL}/obtener-historial-html`);
+    
+    if (response.ok) {
+      const htmlContent = await response.text();
+      const historialContainer = document.getElementById('historial-content');
+      
+      if (historialContainer) {
+        historialContainer.innerHTML = htmlContent;
+        
+        // Reinicializar tooltips para cualquier nuevo botón
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
+        tooltipTriggerList.forEach((el) => new bootstrap.Tooltip(el));
+      }
+    } else {
+      console.error('Error al obtener el historial:', response.status);
+    }
+  } catch (error) {
+    console.error('Error al actualizar historial nutricional:', error);
+  }
+}
