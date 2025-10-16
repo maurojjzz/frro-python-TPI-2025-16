@@ -178,17 +178,18 @@ def buscar_consumo():
 
     # Llama al controlador (ahí se convierte la fecha)
     resultado = ConsumoController.generar_graficos(usuario['id'], fecha_str)
-
+    comida = ConsumoController.obtener_comida_mas_calorias(usuario['id'], fecha_str)
     if resultado == "No hay datos para esa fecha":
         return render_template('consumos.html', usuario=usuario, error=resultado)
 
     # Si se generó el gráfico correctamente
-    ruta_grafico = 'images/grafico_barras.png'
+    ruta_grafico = 'grafico_barras.png'
     return render_template(
         'consumos.html',
         usuario=usuario,
         fecha=fecha_str,
         grafico_barras=ruta_grafico,
-        grafico_torta='images/grafico_torta.png',
-        grafico_lineas='images/grafico_lineas.png'
+        grafico_torta='grafico_torta.png',
+        grafico_lineas='grafico_lineas.png',
+        comida_mas_calorias=comida
     )

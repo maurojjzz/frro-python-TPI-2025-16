@@ -226,3 +226,24 @@ class ConsumoController:
 
         #Generar grafico de lineas de calorias en la semana
         return "Gráfico generado correctamente"
+    
+    @staticmethod
+    def obtener_comida_mas_calorias (usuario_id:int, fecha_str: str):
+        from data.database import SessionLocal
+        from data.models import Comida
+        from sqlalchemy import func
+
+        db = SessionLocal()
+        try:
+            fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
+            comida = db.query(Comida).filter(
+            Comida.usuario_id == usuario_id,
+            Comida.fecha_consumo == fecha
+            ).order_by(Comida.calorias.desc()).first()
+
+            return comida
+        except Exception as e:
+            print(f"Error al obtener comida con más calorías en la fecha indicada: {str(e)}")
+            return None
+        finally:
+            db.close()

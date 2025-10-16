@@ -46,7 +46,7 @@
         <div class="grafico-barras">
             <h2>Gráfico de Barras</h2>
             {% if grafico_barras %}
-                <img src="{{ url_for('static', filename=grafico_barras) }}" alt="grafico-barras">
+                <img src="{{ url_for('static', filename='images/graficos/' ~ grafico_barras) }}" alt="grafico-barras">
             {% elif error %}
                 <p>{{ error }}</p>
             {% endif %}
@@ -54,7 +54,7 @@
         <div class="grafico-torta">
             <h2>Gráfico de Torta</h2>
             {% if grafico_torta %}
-                <img src="{{ url_for('static', filename=grafico_torta) }}" alt="grafico-torta">
+                <img src="{{ url_for('static', filename='images/graficos/' ~ grafico_torta) }}" alt="grafico-torta">
             {% elif error %}
                 <p>{{ error }}</p>
             {% endif %}
@@ -66,7 +66,16 @@
         </div>
         <div class="comida-mas-calorias">
             <h2>Comida más Calórica</h2>
-            <img src="" alt="comida-mas-calorias">
+            {% if comida_mas_calorias %}
+            <br>
+                <h3>{{ comida_mas_calorias.nombre }}</h3>
+                <img src="{{ comida_mas_calorias.imagen_url }}" alt="comida-mas-calorias">
+                <p>({{ comida_mas_calorias.calorias }} calorías)</p>
+
+                
+            {% else %}
+                <h3>No se encontraron datos de comidas.</h3>
+            {% endif %}
         </div>
     </div>
     <div class="comidas-dia">
