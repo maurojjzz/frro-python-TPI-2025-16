@@ -61,7 +61,11 @@
         </div>
         <div class="grafico-plot">
             <h2>Gráfico de Dispersión</h2>
-            <img src="" alt="grafico-plot">
+            {% if grafico_lineas %}
+                <img src="{{ url_for('static', filename='images/graficos/' ~ grafico_lineas) }}" alt="grafico-plot">
+            {% elif error %}
+                <p>{{ error }}</p>
+            {% endif %}
 
         </div>
         <div class="comida-mas-calorias">

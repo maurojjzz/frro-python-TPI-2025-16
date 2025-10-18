@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
-from turtle import pd
+from xmlrpc.client import DateTime
+#from turtle import pd -> Me dice que genera error
 from data.repositories.consumo_repository import ConsumoRepository
 from data.repositories.comida_repository import ComidaRepository
 import pandas as pds
@@ -173,6 +174,26 @@ class ConsumoController:
         finally:
             db.close()
 
+    @staticmethod
+    def obtener_registro_comidas_dia(usuario_id: int, fecha_str: str):
+        from data.database import SessionLocal
+        from data.models import Comida
+        from sqlalchemy.orm import Session
+        
+        try:
+            fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
+            db: Session = SessionLocal()
+            comidas = db.query(Comida).filter(
+                Comida.usuario_id == usuario_id,
+                Comida.fecha_consumo == fecha
+            ).all()
+            db.close()
+            if not comidas:
+                raise ValueError("No se encontraron comidas para el día especificado.")
+            return comidas
+        except Exception as e:
+            raise ValueError(f"Error al obtener el historial de comidas: {str(e)}")
+
 #Generacion de graficos
     @staticmethod
     def generar_graficos(usuario_id: int, fecha_str: str):
@@ -222,6 +243,26 @@ class ConsumoController:
         # Guardar la imagen en static
         ruta_grafico_torta = 'presentation/static/images/graficos/grafico_torta.png'
         plt.savefig(ruta_grafico_torta)
+        plt.close()
+
+        #Generar datos para el grafico de linea
+        comidas = ConsumoController.obtener_registro_comidas_dia(usuario_id, fecha_str)
+        registros = [{'nombre': c.nombre, 'calorias': c.calorias} for c in comidas]
+        linea_df = pds.DataFrame(registros)
+        #Generar grafico de lineas de caloria en el dia 
+        plt.figure(figsize=(10, 6))
+        plt.plot(linea_df.index, linea_df['calorias'], marker='o')
+        plt.title(f'Consumo de Calorías - {fecha}')
+        plt.axhline(y=2000, color='r', linestyle='--', label='Objetivo Calórico (2000 kcal)')
+        plt.legend()
+        plt.ylabel('Calorías')
+        plt.xlabel('Nro de Registro')
+        plt.xticks(linea_df.index)
+        plt.tight_layout()
+
+        # Guardar la imagen en static
+        ruta_grafico_lineas = 'presentation/static/images/graficos/grafico_lineas.png'
+        plt.savefig(ruta_grafico_lineas)
         plt.close()
 
         #Generar grafico de lineas de calorias en la semana
