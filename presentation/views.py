@@ -122,12 +122,18 @@ def subir_imagen():
         }), 500
 
 
+
 @views_bp.route('/historial_comidas', methods=['GET'])
 def historial_comidas():
-    usuario = session['usuario']
+    usuario_sesion = session.get('usuario')
+    if not usuario_sesion:
+        return redirect(url_for('views.index'))  # usuario no logueado
+
     try:
-        user = obtener_historial_comidas(usuario["id"])
-        return render_template('historial_comidas.html', usuario=user)
+        user = obtener_historial_comidas(usuario_sesion["id"])
+        # Evitar error si no hay comidas
+        comidas = user.comidas if user.comidas else []
+        return render_template('historial_comidas.html', usuario=user, comidas=comidas)
     except ValueError as ve:
         return render_template('historial_comidas.html', error=str(ve))
 

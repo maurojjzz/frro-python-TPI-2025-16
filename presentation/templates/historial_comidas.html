@@ -4,56 +4,141 @@
 Historial de Comidas
 {% endblock %}
 
-{% block content %}
+{% block extra_css %}
+<style>
+    body {
+        background-color: #f9f9f9;
+        font-family: Arial, sans-serif;
+    }
 
-    <div class="container">
-        <h2>Usuario: {{ usuario.nombre }}</h2>
+    .container {
+        max-width: 900px;
+        margin: 40px auto;
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
 
-        {% if usuario.comidas and usuario.comidas|length > 0 %}
-            <table>
-                <thead>
-                    <tr>
-                        <th>Imagen</th>
-                        <th>Nombre</th>
-                        <th>Descripción</th>
-                        <th>Calorías</th>
-                        <th>Grasas</th>
-                        <th>Proteínas</th>
-                        <th>Carbohidratos</th>
-                        <th>Fecha de consumo</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for comida in usuario.comidas %}
-                        <tr>
-                            <td>
-                                {% if comida.imagen %}
-                                    <img src="{{ comida.imagen }}" alt="{{ comida.nombre }}" class="imagen-comida">
-                                {% else %}
-                                    <div class="imagen-placeholder">
-                                        Sin imagen
-                                    </div>
-                                {% endif %}
-                            </td>
-                            <td>{{ comida.nombre }}</td>
-                            <td>{{ comida.descripcion }}</td>
-                            <td>{{ comida.calorias }}</td>
-                            <td>{{ comida.grasas }}</td>
-                            <td>{{ comida.proteinas }}</td>
-                            <td>{{ comida.carbohidratos }}</td>
-                            <td>{{ comida.fecha_consumo.strftime('%d/%m/%Y') if comida.fecha_consumo else '-' }}</td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        {% else %}
-            <p class="mensaje">No tienes comidas registradas aún 🍽️</p>
-        {% endif %}
+    h2 {
+        color: #2f4f2f;
+        margin-bottom: 20px;
+    }
 
-        <div style="text-align: center;">
-            <a href="{{ url_for('views.index') }}" class="btn-volver">Volver al Dashboard</a>
-        </div>
-    </div>
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
 
+    table th, table td {
+        padding: 10px;
+        text-align: center;
+        border-bottom: 1px solid #e0e0e0;
+        color: #333;
+    }
+
+    table th {
+        background-color: #e6f2e6;
+        color: #2f4f2f;
+    }
+
+    .imagen-comida {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 8px;
+        border: 1px solid #d0e0d0;
+    }
+
+    .imagen-placeholder {
+        width: 80px;
+        height: 80px;
+        background-color: #e6f2e6;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #7f9f7f;
+        font-size: 12px;
+        border: 1px solid #d0e0d0;
+    }
+
+    .mensaje {
+        margin-top: 20px;
+        text-align: center;
+        font-size: 16px;
+        color: #4f704f;
+    }
+
+    .btn-volver {
+        display: inline-block;
+        margin-top: 25px;
+        padding: 10px 20px;
+        background-color: #d9f0d9;
+        color: #2f4f2f;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background-color 0.3s ease;
+    }
+
+    .btn-volver:hover {
+        background-color: #b8e6b8;
+    }
+</style>
 {% endblock %}
-{% block scripts %} {% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2>Usuario: {{ usuario.nombre }}</h2>
+
+    {% if comidas and comidas|length > 0 %}
+        <table>
+            <thead>
+                <tr>
+                    <th>Imagen</th>
+                    <th>Nombre</th>
+                    <th>Descripción</th>
+                    <th>Calorías</th>
+                    <th>Grasas</th>
+                    <th>Proteínas</th>
+                    <th>Carbohidratos</th>
+                    <th>Fecha de consumo</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for comida in comidas %}
+                    <tr>
+                        <td>
+                            {% if comida.imagen_url %}
+                                <img src="{{ comida.imagen_url }}" alt="{{ comida.nombre }}" class="imagen-comida">
+                            {% else %}
+                                <div class="imagen-placeholder">
+                                    Sin imagen
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>{{ comida.nombre }}</td>
+                        <td>{{ comida.descripcion }}</td>
+                        <td>{{ comida.calorias }}</td>
+                        <td>{{ comida.grasas }}</td>
+                        <td>{{ comida.proteinas }}</td>
+                        <td>{{ comida.carbohidratos }}</td>
+                        <td>{{ comida.fecha_consumo.strftime('%d/%m/%Y') if comida.fecha_consumo else '-' }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="mensaje">No tienes comidas registradas aún 🍽️</p>
+    {% endif %}
+
+    <div style="text-align: center;">
+        <a href="{{ url_for('views.index') }}" class="btn-volver">Volver al Dashboard</a>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Scripts adicionales si fueran necesarios -->
+{% endblock %}
