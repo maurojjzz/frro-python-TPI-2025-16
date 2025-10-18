@@ -71,3 +71,35 @@ class ComidaRepository:
             return comidas
         finally:
             db.close()
+
+    @staticmethod
+    def obtener_comida_mas_calorias (usuario_id:int, fecha_str: str):
+        db = SessionLocal()
+        try:
+            fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
+            comida = db.query(Comida).filter(
+            Comida.usuario_id == usuario_id,
+            Comida.fecha_consumo == fecha
+            ).order_by(Comida.calorias.desc()).first()
+
+            return comida
+        except Exception as e:
+            print(f"Error al obtener comida con más calorías en la fecha indicada: {str(e)}")
+            return None
+        finally:
+            db.close()
+
+    @staticmethod
+    def obtener_registro_comidas_dia(usuario_id: int, fecha: date):    
+        try:
+            db: Session = SessionLocal()
+            comidas = db.query(Comida).filter(
+                Comida.usuario_id == usuario_id,
+                Comida.fecha_consumo == fecha
+            ).all()
+            db.close()
+            if not comidas:
+                raise ValueError("No se encontraron comidas para el día especificado.")
+            return comidas
+        except Exception as e:
+            raise ValueError(f"Error al obtener el historial de comidas: {str(e)}")

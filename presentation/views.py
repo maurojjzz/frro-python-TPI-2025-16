@@ -173,23 +173,39 @@ def consumos():
 
 @views_bp.route('/buscar', methods=['POST'])
 def buscar_consumo():
-    fecha_str = request.form['fecha']  # Recibe la fecha del formulario (string)
     usuario = session.get('usuario')
-
-    # Llama al controlador (ahí se convierte la fecha)
-    resultado = ConsumoController.generar_graficos(usuario['id'], fecha_str)
-    comida = ConsumoController.obtener_comida_mas_calorias(usuario['id'], fecha_str)
-    if resultado == "No hay datos para esa fecha":
-        return render_template('consumos.html', usuario=usuario, error=resultado)
-
+    fecha_inicio_str = request.form.get('fecha_inicio')
+    fecha_fin_str = request.form.get('fecha_fin')
+    fecha_str = request.form.get('fecha')  
+    try:
+        if fecha_inicio_str and fecha_fin_str:
+            resultado = ConsumoController.generar_graficos_semanales(usuario['id'], fecha_inicio_str, fecha_fin_str)
+            comida = None
+        else:
+            fecha_str = request.form['fecha']  # Recibe la fecha del formulario (string)
+            resultado = ConsumoController.generar_graficos(usuario['id'], fecha_str)
+            comida = ComidaRepository.obtener_comida_mas_calorias(usuario['id'], fecha_str)
+            if resultado == "No hay datos para esa fecha":
+                return render_template('consumos.html', usuario=usuario, error=resultado)
+    except Exception as e:
+        return render_template('consumos.html', usuario=usuario, error=f"Error al generar gráficos: {str(e)}")
     # Si se generó el gráfico correctamente
-    ruta_grafico = 'grafico_barras.png'
+    
+    if isinstance(resultado, dict):
+        grafico_barras = resultado.get("grafico_barras")
+        grafico_torta = resultado.get("grafico_torta")
+        grafico_lineas = resultado.get("grafico_lineas")
+    else:
+        # resultado es un mensaje de error
+        return render_template('consumos.html', usuario=usuario, error=resultado)
     return render_template(
         'consumos.html',
         usuario=usuario,
         fecha=fecha_str,
-        grafico_barras=ruta_grafico,
-        grafico_torta='grafico_torta.png',
-        grafico_lineas='grafico_lineas.png',
+        fecha_inicio_str=fecha_inicio_str,
+        fecha_fin_str=fecha_fin_str,
+        grafico_barras=grafico_barras,
+        grafico_torta=grafico_torta,
+        grafico_lineas=grafico_lineas,
         comida_mas_calorias=comida
     )

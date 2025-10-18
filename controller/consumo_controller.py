@@ -1,5 +1,4 @@
-from datetime import datetime, timedelta
-from xmlrpc.client import DateTime
+from datetime import datetime, timedelta, date
 #from turtle import pd -> Me dice que genera error
 from data.repositories.consumo_repository import ConsumoRepository
 from data.repositories.comida_repository import ComidaRepository
@@ -174,25 +173,7 @@ class ConsumoController:
         finally:
             db.close()
 
-    @staticmethod
-    def obtener_registro_comidas_dia(usuario_id: int, fecha_str: str):
-        from data.database import SessionLocal
-        from data.models import Comida
-        from sqlalchemy.orm import Session
-        
-        try:
-            fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
-            db: Session = SessionLocal()
-            comidas = db.query(Comida).filter(
-                Comida.usuario_id == usuario_id,
-                Comida.fecha_consumo == fecha
-            ).all()
-            db.close()
-            if not comidas:
-                raise ValueError("No se encontraron comidas para el día especificado.")
-            return comidas
-        except Exception as e:
-            raise ValueError(f"Error al obtener el historial de comidas: {str(e)}")
+#DATOS PARA UNA SOLA FECHA
 
 #Generacion de graficos
     @staticmethod
@@ -246,7 +227,7 @@ class ConsumoController:
         plt.close()
 
         #Generar datos para el grafico de linea
-        comidas = ConsumoController.obtener_registro_comidas_dia(usuario_id, fecha_str)
+        comidas = ComidaRepository.obtener_registro_comidas_dia(usuario_id, fecha)
         registros = [{'nombre': c.nombre, 'calorias': c.calorias} for c in comidas]
         linea_df = pds.DataFrame(registros)
         #Generar grafico de lineas de caloria en el dia 
@@ -266,25 +247,67 @@ class ConsumoController:
         plt.close()
 
         #Generar grafico de lineas de calorias en la semana
-        return "Gráfico generado correctamente"
+        return {
+            "grafico_barras": "grafico_barras.png",
+            "grafico_torta": "grafico_torta.png",
+            "grafico_lineas": "grafico_lineas.png"
+            }
     
+    #Datos para varias fechas
+
     @staticmethod
-    def obtener_comida_mas_calorias (usuario_id:int, fecha_str: str):
-        from data.database import SessionLocal
-        from data.models import Comida
-        from sqlalchemy import func
+    def generar_graficos_semanales(usuario_id: int,fecha_inicio: str, fecha_fin: str):
+        sns.set_theme(style="darkgrid")
 
-        db = SessionLocal()
         try:
-            fecha = datetime.strptime(fecha_str, "%Y-%m-%d").date()
-            comida = db.query(Comida).filter(
-            Comida.usuario_id == usuario_id,
-            Comida.fecha_consumo == fecha
-            ).order_by(Comida.calorias.desc()).first()
+            fecha_inicio_dt = datetime.strptime(fecha_inicio, "%Y-%m-%d").date()
+            fecha_fin_dt =  datetime.strptime(fecha_fin, "%Y-%m-%d").date()
+        except ValueError:
+            return "Formato de fecha inválido"
+        
+        consumos_semanales = ComidaRepository.obtener_consumos_diarios_rango(usuario_id, fecha_inicio_dt, fecha_fin_dt)
+        if not consumos_semanales:
+            return "No hay datos para el rango de fechas proporcionado"
+        df = pds.DataFrame(consumos_semanales)
 
-            return comida
-        except Exception as e:
-            print(f"Error al obtener comida con más calorías en la fecha indicada: {str(e)}")
-            return None
-        finally:
-            db.close()
+        #Grafico de barras para calorias diarias en el rango
+        plt.figure(figsize=(10, 6))
+        plt.bar(df['fecha'], df['calorias'])
+        plt.title(f'Consumo Diario de Calorías - {fecha_inicio} a {fecha_fin}')
+        plt.axhline(y=2000, color='r', linestyle='--', label='Objetivo Calórico (2000 kcal)')
+        plt.legend()
+        plt.ylabel('Calorías')
+        plt.xlabel('Fecha')
+        plt.tight_layout()
+        ruta_grafico = 'presentation/static/images/graficos/grafico_barras_semanal.png'
+        plt.savefig(ruta_grafico)
+        plt.close()
+
+        #Grafico de torta para consumo semanal
+        plt.figure(figsize=(8, 8))
+        plt.pie([df['proteinas'].sum(), df['grasas'].sum(), df['carbohidratos'].sum()], labels=['Proteínas', 'Grasas', 'Carbohidratos'], autopct='%1.1f%%', startangle=140)
+        plt.title(f'Consumo Semanal - {fecha_inicio} a {fecha_fin}')
+        plt.axis('equal')
+        ruta_grafico_torta = 'presentation/static/images/graficos/grafico_torta_semanal.png'
+        plt.savefig(ruta_grafico_torta)
+        plt.close()
+
+        #Grafico de lineas para calorias diarias en el rango
+        plt.figure(figsize=(10, 6))
+        plt.plot(df['fecha'], df['calorias'], marker='o')
+        plt.title(f'Consumo Diario de Calorías - {fecha_inicio} a {fecha_fin}')
+        plt.axhline(y=2000, color='r', linestyle='--', label='Objetivo Calórico (2000 kcal)')
+        plt.legend()
+        plt.ylabel('Calorías')
+        plt.xlabel('Fecha')
+        plt.xticks(df['fecha'])
+        plt.tight_layout()
+        ruta_grafico_lineas = 'presentation/static/images/graficos/grafico_lineas_semanal.png'
+        plt.savefig(ruta_grafico_lineas)
+        plt.close()
+
+        return {
+        "grafico_barras": "grafico_barras_semanal.png",
+        "grafico_torta": "grafico_torta_semanal.png",
+        "grafico_lineas": "grafico_lineas_semanal.png"
+        }

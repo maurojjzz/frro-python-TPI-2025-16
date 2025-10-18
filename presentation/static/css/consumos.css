@@ -72,15 +72,22 @@ label{
 .grafico-barras,
 .grafico-torta,
 .grafico-plot,
-.comida-mas-calorias {
+.comida-mas-calorias{
     width: 600px;
-    height: 400px;
+    height: 450px;
     display: flex;
+    margin-top: 35px;
     flex-direction: column;
     align-items: center;
 }
 
-
+.comida-mas-calorias img{
+    width: 300px;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-top: 15px;
+}
 /*Quiero que las imagenes abarquen el tamaño de su container y nada mas*/
 img {
     width: 100%;
