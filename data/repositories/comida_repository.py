@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from data.database import SessionLocal
 from data.models import Comida
 from sqlalchemy import func
-from datetime import date
+from datetime import date,datetime
 from typing import Dict
 
 

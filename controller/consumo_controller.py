@@ -207,6 +207,9 @@ class ConsumoController:
         plt.legend()
         plt.ylabel('Cantidad')
         plt.xlabel('Macronutrientes')
+        for i, valor in enumerate(df.iloc[0]):
+            plt.text(i, valor + 10, str(int(valor)), ha='center')
+
         plt.tight_layout()
         
         # Guardar la imagen en static
