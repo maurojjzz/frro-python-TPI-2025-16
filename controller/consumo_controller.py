@@ -231,6 +231,7 @@ class ConsumoController:
         registros = [{'nombre': c.nombre, 'calorias': c.calorias} for c in comidas]
         linea_df = pds.DataFrame(registros)
         #Generar grafico de lineas de caloria en el dia 
+        
         plt.figure(figsize=(10, 6))
         plt.plot(linea_df.index, linea_df['calorias'], marker='o')
         plt.title(f'Consumo de Calorías - {fecha}')
@@ -268,8 +269,12 @@ class ConsumoController:
         consumos_semanales = ComidaRepository.obtener_consumos_diarios_rango(usuario_id, fecha_inicio_dt, fecha_fin_dt)
         if not consumos_semanales:
             return "No hay datos para el rango de fechas proporcionado"
-        df = pds.DataFrame(consumos_semanales)
+        df = pds.DataFrame(consumos_semanales).sort_values(by='fecha')
 
+        #Se reindexa el df para completar las fechas faltantes en el rango
+        rango_fechas = pds.date_range(fecha_inicio_dt, fecha_fin_dt)
+        df = df.set_index('fecha').reindex(rango_fechas, fill_value=0).rename_axis('fecha').reset_index()
+        
         #Grafico de barras para calorias diarias en el rango
         plt.figure(figsize=(10, 6))
         plt.bar(df['fecha'], df['calorias'])
@@ -278,6 +283,10 @@ class ConsumoController:
         plt.legend()
         plt.ylabel('Calorías')
         plt.xlabel('Fecha')
+        plt.xticks(rotation=45, ha='right')
+        for i, valor in enumerate(df['calorias']):
+            plt.text(df['fecha'].iloc[i], valor + 50, str(int(valor)), ha='center')
+
         plt.tight_layout()
         ruta_grafico = 'presentation/static/images/graficos/grafico_barras_semanal.png'
         plt.savefig(ruta_grafico)
