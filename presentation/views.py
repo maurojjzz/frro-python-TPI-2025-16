@@ -138,7 +138,6 @@ def logout():
     flash('Has cerrado sesión exitosamente.', 'success')
     return redirect(url_for('views.login'))
 
-
 @views_bp.route('/obtener-historial-html')
 def obtener_historial_html():
     usuario = session.get('usuario')
@@ -150,7 +149,6 @@ def obtener_historial_html():
         return render_template('partials/historial_partial.html', ultimas_comidas=ultimas_comidas)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 @views_bp.route('/inicializar-historial')
 def inicializar_historial():
@@ -168,3 +166,46 @@ def inicializar_historial():
     except Exception as e:
         print(f'❌ Error al inicializar historial: {str(e)}')
         return redirect(url_for('views.index'))
+
+@views_bp.route('/consumos', methods=['GET'])
+def consumos():
+   return render_template('consumos.html')
+
+@views_bp.route('/buscar', methods=['POST'])
+def buscar_consumo():
+    usuario = session.get('usuario')
+    fecha_inicio_str = request.form.get('fecha_inicio')
+    fecha_fin_str = request.form.get('fecha_fin')
+    fecha_str = request.form.get('fecha')  
+    try:
+        if fecha_inicio_str and fecha_fin_str:
+            resultado = ConsumoController.generar_graficos_semanales(usuario['id'], fecha_inicio_str, fecha_fin_str)
+            comida = None
+        else:
+            fecha_str = request.form['fecha']  # Recibe la fecha del formulario (string)
+            resultado = ConsumoController.generar_graficos(usuario['id'], fecha_str)
+            comida = ComidaRepository.obtener_comida_mas_calorias(usuario['id'], fecha_str)
+            if resultado == "No hay datos para esa fecha":
+                return render_template('consumos.html', usuario=usuario, error=resultado)
+    except Exception as e:
+        return render_template('consumos.html', usuario=usuario, error=f"Error al generar gráficos: {str(e)}")
+    # Si se generó el gráfico correctamente
+    
+    if isinstance(resultado, dict):
+        grafico_barras = resultado.get("grafico_barras")
+        grafico_torta = resultado.get("grafico_torta")
+        grafico_lineas = resultado.get("grafico_lineas")
+    else:
+        # resultado es un mensaje de error
+        return render_template('consumos.html', usuario=usuario, error=resultado)
+    return render_template(
+        'consumos.html',
+        usuario=usuario,
+        fecha=fecha_str,
+        fecha_inicio_str=fecha_inicio_str,
+        fecha_fin_str=fecha_fin_str,
+        grafico_barras=grafico_barras,
+        grafico_torta=grafico_torta,
+        grafico_lineas=grafico_lineas,
+        comida_mas_calorias=comida
+    )

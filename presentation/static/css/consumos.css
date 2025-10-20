@@ -1,0 +1,102 @@
+
+body{
+    font-family: "Poppins", sans-serif;
+}
+
+.titulo{
+    text-align: center;
+    margin-top: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    color: #333;
+}
+
+.container-opciones{
+    width: auto;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.titulo-seccion{
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #333;
+}
+
+.consumos-diarios{
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 100px;
+}
+
+.consumos-semana{
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 100px;
+}
+
+.fechas-rango{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+label{
+    font-size: 14px;
+    color: #666;
+    margin-top: 10px;
+}
+.graficos{
+    width: auto;
+    height: auto;
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(2, 1fr);
+    gap: 50px;
+}
+.grafico-barras,
+.grafico-torta,
+.grafico-plot,
+.comida-mas-calorias{
+    width: 600px;
+    height: 450px;
+    display: flex;
+    margin-top: 35px;
+    flex-direction: column;
+    align-items: center;
+    overflow: hidden; /* evita que la imagen sobresalga del contenedor */
+}
+
+.comida-mas-calorias img{
+    width: 300px;
+    height: 300px;
+    object-position: center;
+    display: block;
+    border-radius: 10px;
+    margin-top: 15px;
+}
+
+/* Regla genérica: no distorsionar ni recortar imágenes fuera de sus contenedores */
+img {
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    display: block;
+}
