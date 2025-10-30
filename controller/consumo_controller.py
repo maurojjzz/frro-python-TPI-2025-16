@@ -268,7 +268,7 @@ class ConsumoController:
             fecha_fin_dt =  datetime.strptime(fecha_fin, "%Y-%m-%d").date()
         except ValueError:
             return "Formato de fecha inválido"
-        
+
         consumos_semanales = ComidaRepository.obtener_consumos_diarios_rango(usuario_id, fecha_inicio_dt, fecha_fin_dt)
         if not consumos_semanales:
             return "No hay datos para el rango de fechas proporcionado"

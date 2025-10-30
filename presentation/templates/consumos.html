@@ -1,89 +1,100 @@
-{% extends "base.html" %}
-
-{% block title %}Consumos Diarios{% endblock %}
+{% extends "base.html" %} 
+{% block title %}Consumos Diarios{% endblock %} 
 
 {% block extra_css %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/consumos.css') }}">
-
-{% endblock %}    
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/consumos.css') }}" />
+{% endblock %} 
 
 {% block content %}
-<div class="titulo">
-    <h1>Consumos de {{usuario}}</h1>
-</div>
+<div class="container-fluid main-box text-center  mt-4">
+  <div class="mb-4" >
+    <h2 class="titulo">Dashboard de analisis nutricional</h2>
+    <p class="subtitulo mb-0">Visualiza tus consumos diarios de manera sencilla</p>
+  </div>
 
-<div class="container-opciones">
-    <div class="consumos-diarios">
-        <div class="titulo-seccion">
-            <h1>Buscar por fecha</h1>
-        </div>
-        <form method="POST" action="/buscar">
-            <input type="date" name="fecha" required>
-            <button type="submit">Buscar</button>
-        </form>
-    </div>
-    <div class="consumos-semana">
-        <div class="titulo-seccion">
-            <h1>Buscar por rango de fechas</h1>
-        </div>
-        <form method="POST" action="/buscar">
-            <div class="fechas-rango">
-                <input type="date" name="fecha_inicio" required>
-                <span> a </span>
-                <input type="date" name="fecha_fin" required>
-                <button type="submit">Buscar</button>
-            </div>
-                <label> Ingresar un rango de 7 dias maximo</label>
-        </form>
-    </div>
-</div>
+  <div class="container-opciones ">
 
-<div class="container">
+    <div class="filtros-rapidos ">
+      <button type="button" class="btn btn-filtro active" data-filtro="semana-actual">
+        Semana actual
+      </button>
+      <button type="button" class="btn btn-filtro" data-filtro="7dias">
+        Últimos 7 días
+      </button>
+      <button type="button" class="btn btn-filtro" data-filtro="30dias">
+        Últimos 30 días
+      </button>
+    </div>
+
+    <div>
+      <form method="POST" action="/buscar">
+        <div class="fechas-rango">
+
+          <div class="form-floating">
+            <input type="date" class="form-control  border" id="floatingInput" placeholder="dd/mm/aaaa" name="fecha_inicio">
+            <label for="floatingInput">Fecha de Inicio</label>
+          </div>
+
+          <div class="form-floating">
+            <input type="date" class="form-control border" id="floatingInput" placeholder="dd/mm/aaaa" name="fecha_fin">
+            <label for="floatingInput">Fecha Fin</label>
+          </div>
+
+          <button type="submit" class="btn btnEnviar text-white rounded-5 ">Aplicar</button>
+        </div>
+      </form>
+    </div>
+
+  </div>
+
+  <div class="container">
     <div class="titulo-seccion">
-        <h1>Gráficos</h1>
+      <h3>Gráficos</h3>
     </div>
     <div class="graficos">
-        <div class="grafico-barras">
-            <h2>Gráfico de Barras</h2>
-            {% if grafico_barras %}
-                <img src="{{ url_for('static', filename='images/graficos/' ~ grafico_barras) }}" alt="grafico-barras">
-            {% elif error %}
-                <p>{{ error }}</p>
-            {% endif %}
-        </div>
-        <div class="grafico-torta">
-            <h2>Gráfico de Torta</h2>
-            {% if grafico_torta %}
-                <img src="{{ url_for('static', filename='images/graficos/' ~ grafico_torta) }}" alt="grafico-torta">
-            {% elif error %}
-                <p>{{ error }}</p>
-            {% endif %}
-        </div>
-        <div class="grafico-plot">
-            <h2>Gráfico de Dispersión</h2>
-            {% if grafico_lineas %}
-                <img src="{{ url_for('static', filename='images/graficos/' ~ grafico_lineas) }}" alt="grafico-plot">
-            {% elif error %}
-                <p>{{ error }}</p>
-            {% endif %}
+      <div class="grafico-barras">
+        <h2>Gráfico de Barras</h2>
+        {% if grafico_barras %}
+        <img src="{{ url_for('static', filename='images/graficos/' ~ grafico_barras) }}" alt="grafico-barras" />
+        {% elif error %}
+        <p>{{ error }}</p>
+        {% endif %}
+      </div>
+      <div class="grafico-torta">
+        <h2>Gráfico de Torta</h2>
+        {% if grafico_torta %}
+        <img src="{{ url_for('static', filename='images/graficos/' ~ grafico_torta) }}" alt="grafico-torta" />
+        {% elif error %}
+        <p>{{ error }}</p>
+        {% endif %}
+      </div>
+      <div class="grafico-plot">
+        <h2>Gráfico de Dispersión</h2>
+        {% if grafico_lineas %}
+        <img src="{{ url_for('static', filename='images/graficos/' ~ grafico_lineas) }}" alt="grafico-plot" />
+        {% elif error %}
+        <p>{{ error }}</p>
+        {% endif %}
+      </div>
+      <div class="comida-mas-calorias">
+        <h2>Comida más Calórica</h2>
+        {% if comida_mas_calorias %}
+        <br />
+        <h3>{{ comida_mas_calorias.nombre }}</h3>
+        <img src="{{ comida_mas_calorias.imagen_url }}" alt="comida-mas-calorias" />
+        <p>({{ comida_mas_calorias.calorias }} calorías)</p>
 
-        </div>
-        <div class="comida-mas-calorias">
-            <h2>Comida más Calórica</h2>
-            {% if comida_mas_calorias %}
-            <br>
-                <h3>{{ comida_mas_calorias.nombre }}</h3>
-                <img src="{{ comida_mas_calorias.imagen_url }}" alt="comida-mas-calorias">
-                <p>({{ comida_mas_calorias.calorias }} calorías)</p>
-
-                
-            {% else %}
-                <h3>No se encontraron datos de comidas.</h3>
-            {% endif %}
-        </div>
+        {% else %}
+        <h3>No se encontraron datos de comidas.</h3>
+        {% endif %}
+      </div>
     </div>
-    <div class="comidas-dia">
-        
-    </div>
+    <div class="comidas-dia"></div>
+  </div>
 </div>
+
+{% endblock %} 
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='js/consumos.js') }}"></script>
 {% endblock %}

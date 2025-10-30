@@ -1,102 +1,116 @@
-
-body{
-    font-family: "Poppins", sans-serif;
+.main-box {
+  display: flex;
+  flex-direction: column;
+  flex-grow: grow;
+  max-width: 1320px;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }
 
-.titulo{
-    text-align: center;
-    margin-top: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    color: #333;
+.container-opciones {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  
 }
 
-.container-opciones{
-    width: auto;
-    height: auto;
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-start;
-    align-items: center;
+.filtros-rapidos {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
 }
 
-.titulo-seccion{
-    text-align: center;
-    margin-bottom: 20px;
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
+.btn-filtro {
+  padding: 8px 20px;
+  border: 1px solid #ddd;
+  background-color: #fff;
+  color: #666;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 14px;
 }
 
-.consumos-diarios{
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    margin: 100px;
+.btn-filtro:hover {
+  background-color: #f5f5f5;
+  border-color: #15a349;
 }
 
-.consumos-semana{
-    height: 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    margin: 100px;
+.btn-filtro.active {
+  background-color: #15a349;
+  color: white;
+  border-color: #15a349;
 }
 
-.fechas-rango{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
+.titulo-seccion {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
 }
 
-label{
-    font-size: 14px;
-    color: #666;
-    margin-top: 10px;
+.form-floating .form-control:focus {
+  box-shadow: none;
 }
-.graficos{
-    width: auto;
-    height: auto;
-    display: grid;
-    align-items: center;
-    justify-content: center;
-    grid-template-columns: repeat(2, 1fr);
-    grid-template-rows: repeat(2, 1fr);
-    gap: 50px;
+
+.btnEnviar {
+  background-color: #15a349;
+  font-size: 16px;
+  width: 140px;
+  height: 45px;
+}
+.btnEnviar:hover {
+  background-color: #128c3b;
+}
+
+.fechas-rango {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.graficos {
+  width: auto;
+  height: auto;
+  display: grid;
+  align-items: center;
+  justify-content: center;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 50px;
 }
 .grafico-barras,
 .grafico-torta,
 .grafico-plot,
-.comida-mas-calorias{
-    width: 600px;
-    height: 450px;
-    display: flex;
-    margin-top: 35px;
-    flex-direction: column;
-    align-items: center;
-    overflow: hidden; /* evita que la imagen sobresalga del contenedor */
+.comida-mas-calorias {
+  width: 600px;
+  height: 450px;
+  display: flex;
+  margin-top: 35px;
+  flex-direction: column;
+  align-items: center;
+  overflow: hidden; /* evita que la imagen sobresalga del contenedor */
 }
 
-.comida-mas-calorias img{
-    width: 300px;
-    height: 300px;
-    object-position: center;
-    display: block;
-    border-radius: 10px;
-    margin-top: 15px;
+.comida-mas-calorias img {
+  width: 300px;
+  height: 300px;
+  object-position: center;
+  display: block;
+  border-radius: 10px;
+  margin-top: 15px;
 }
 
 /* Regla genérica: no distorsionar ni recortar imágenes fuera de sus contenedores */
 img {
-    max-width: 100%;
-    max-height: 100%;
-    width: auto;
-    height: auto;
-    object-fit: contain;
-    display: block;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
 }
