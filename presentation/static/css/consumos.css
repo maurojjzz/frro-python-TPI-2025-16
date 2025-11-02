@@ -233,3 +233,21 @@
     min-width: 100%;
   }
 }
+
+/* Spinner de carga */
+#loading-spinner {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.spinner-border.text-success {
+  border-width: 0.3rem;
+}

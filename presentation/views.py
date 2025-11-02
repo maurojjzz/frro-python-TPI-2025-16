@@ -372,7 +372,6 @@ def consumos():
 
     datita = ConsumoController.obtener_ultimos_consumos_semanales(usuario['id'])
 
-    # Construir DataFrame limpiando el atributo interno de SQLAlchemy
     filas = []
     for semana_obj in datita:
         d = getattr(semana_obj, "__dict__", {}).copy()
@@ -491,45 +490,86 @@ def consumos():
     )
 
 
-@views_bp.route('/buscar', methods=['POST'])
-def buscar_consumo():
+@views_bp.route('/api/consumos/filtrar', methods=['POST'])
+def filtrar_consumos_api():
+    """Endpoint API que devuelve datos filtrados por rango de fechas en formato JSON"""
     usuario = session.get('usuario')
-    fecha_inicio_str = request.form.get('fecha_inicio')
-    fecha_fin_str = request.form.get('fecha_fin')
-    fecha_str = request.form.get('fecha')
+    if not usuario:
+        return jsonify({"success": False, "error": "Usuario no autenticado"}), 401
+    
     try:
-        if fecha_inicio_str and fecha_fin_str:
-            resultado = ConsumoController.generar_graficos_semanales(
-                usuario['id'], fecha_inicio_str, fecha_fin_str)
-            comida = None
+        data = request.get_json()
+        fecha_inicio_str = data.get('fecha_inicio')
+        fecha_fin_str = data.get('fecha_fin')
+        
+        if not fecha_inicio_str or not fecha_fin_str:
+            return jsonify({"success": False, "error": "Faltan fechas de inicio o fin"}), 400
+        
+        # Convertir strings a objetos date
+        fecha_inicio = pd.to_datetime(fecha_inicio_str).date()
+        fecha_fin = pd.to_datetime(fecha_fin_str).date()
+        
+        # Obtener comidas en el rango
+        comidas_usuario = ConsumoController.todas_las_comidas(usuario['id'])
+        
+        if comidas_usuario:
+            comidas_list = []
+            for comida in comidas_usuario:
+                comida_dict = getattr(comida, "__dict__", {})
+                comida_dict.pop('_sa_instance_state', None)
+                comidas_list.append(comida_dict)
+            comidas_df = pd.DataFrame(comidas_list)
+            comidas_df['fecha_consumo'] = pd.to_datetime(comidas_df['fecha_consumo'])
+            
+            # Filtrar por rango de fechas
+            mask = (comidas_df['fecha_consumo'].dt.date >= fecha_inicio) & (comidas_df['fecha_consumo'].dt.date <= fecha_fin)
+            comidas_filtradas = comidas_df[mask].copy()
+            
+            if comidas_filtradas.empty:
+                return jsonify({"success": False, "error": "No hay datos en el rango seleccionado"}), 404
+            
+            # Calcular totales para gráfico de barras
+            macro_cols = ['calorias', 'proteinas', 'carbohidratos', 'grasas', 'colesterol']
+            totales = comidas_filtradas[macro_cols].sum()
+            
+            # Gráfico de barras
+            labels = ['Calorías (kcal)', 'Proteínas (g)', 'Carbohidratos (g)', 'Grasas (g)', 'Colesterol (mg)']
+            values = [float(totales[col]) for col in macro_cols]
+            
+            df_plot = pd.DataFrame({'Nutriente': labels, 'Cantidad': values})
+            colores_nutrientes = ['#15a349', '#4285f4', '#fbbc04', '#ea4335', '#9c27b0']
+            
+            fig_bar = px.bar(df_plot, x='Nutriente', y='Cantidad',
+                            title=f'Consumo de nutrientes ({fecha_inicio_str} a {fecha_fin_str})',
+                            color='Nutriente', color_discrete_sequence=colores_nutrientes)
+            fig_bar.update_layout(margin=dict(t=40, r=20, b=40, l=40), showlegend=False)
+            graphJSON = fig_bar.to_json()
+            
+            # Gráfico de torta
+            fig_pie = px.pie(df_plot, values='Cantidad', names='Nutriente',
+                            title='Porcentajes de nutrientes consumidos',
+                            color='Nutriente', color_discrete_sequence=colores_nutrientes, hole=0.4)
+            fig_pie.update_layout(margin=dict(t=35, r=0, b=0, l=0))
+            graphPieJSON = fig_pie.to_json()
+            
+            # Tabla de comidas
+            comidas_filtradas = comidas_filtradas.sort_values('fecha_consumo', ascending=False)
+            tabla_data = comidas_filtradas[['nombre', 'fecha_consumo', 'calorias', 'proteinas', 'carbohidratos', 'grasas', 'colesterol']].to_dict('records')
+            
+            # Convertir fechas a string para JSON
+            for row in tabla_data:
+                row['fecha_consumo'] = row['fecha_consumo'].strftime('%Y-%m-%d')
+            
+            return jsonify({
+                "success": True,
+                "graphJSON": graphJSON,
+                "graphPieJSON": graphPieJSON,
+                "tabla_data": tabla_data,
+                "fecha_inicio": fecha_inicio_str,
+                "fecha_fin": fecha_fin_str
+            })
         else:
-            # Recibe la fecha del formulario (string)
-            fecha_str = request.form['fecha']
-            resultado = ConsumoController.generar_graficos(
-                usuario['id'], fecha_str)
-            comida = ComidaRepository.obtener_comida_mas_calorias(
-                usuario['id'], fecha_str)
-            if resultado == "No hay datos para esa fecha":
-                return render_template('consumos.html', usuario=usuario, error=resultado)
+            return jsonify({"success": False, "error": "No hay comidas registradas"}), 404
+            
     except Exception as e:
-        return render_template('consumos.html', usuario=usuario, error=f"Error al generar gráficos: {str(e)}")
-    # Si se generó el gráfico correctamente
-
-    if isinstance(resultado, dict):
-        grafico_barras = resultado.get("grafico_barras")
-        grafico_torta = resultado.get("grafico_torta")
-        grafico_lineas = resultado.get("grafico_lineas")
-    else:
-        # resultado es un mensaje de error
-        return render_template('consumos.html', usuario=usuario, error=resultado)
-    return render_template(
-        'consumos.html',
-        usuario=usuario,
-        fecha=fecha_str,
-        fecha_inicio_str=fecha_inicio_str,
-        fecha_fin_str=fecha_fin_str,
-        grafico_barras=grafico_barras,
-        grafico_torta=grafico_torta,
-        grafico_lineas=grafico_lineas,
-        comida_mas_calorias=comida
-    )
+        return jsonify({"success": False, "error": f"Error al filtrar datos: {str(e)}"}), 500
