@@ -10,8 +10,10 @@
 .container-opciones {
   display: flex;
   flex-direction: row;
+  align-items: center;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
   
 }
 
@@ -23,9 +25,9 @@
 
 .btn-filtro {
   padding: 8px 20px;
-  border: 1px solid #111827; /* dark border */
-  background-color: #1f2937; /* dark slate */
-  color: #ffffff; /* white text for contrast */
+  border: 1px solid #111827; 
+  background-color: #1f2937; 
+  color: #ffffff; 
   border-radius: 20px;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -33,14 +35,31 @@
 }
 
 .btn-filtro:hover {
-  background-color: #374151; /* slightly lighter dark */
+  background-color: #374151;
   border-color: #374151;
 }
 
 .btn-filtro.active {
-  background-color: #0e7a35; /* darker green */
+  background-color: #0e7a35; 
   color: #ffffff;
   border-color: #0e7a35;
+}
+
+@media (max-width: 1028px) {
+  .container-opciones{
+    flex-direction: column;
+    gap: 30px;
+  }
+}
+
+@media (max-width: 558px) {
+  .fechas-rango {
+    display: flex;
+    flex-direction: column !important;
+  }
+  .filtros-rapidos{
+    gap:3px !important;
+  }
 }
 
 .titulo-seccion {
@@ -82,7 +101,6 @@
 
 }
 .graf_div_container{
-  /* border:1px solid red; */
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -95,7 +113,6 @@
 }
 
 .graf_div_box{
-  /* border:1px solid red; */
   min-width: 400px;
   max-width: 600px;        
   min-height: 200px;
@@ -109,10 +126,9 @@
   
 }
 
-/* Carousel inside graf_div_box */
 .carousel-wrapper {
   width: 100%;
-  height: 250px; /* Match chart height for consistency */
+  height: 250px; 
 }
 
 .carousel,
@@ -124,7 +140,7 @@
 .carousel-item > img {
   height: 100%;
   width: 100%;
-  object-fit: cover; /* Fill area nicely */
+  object-fit: cover; 
 }
 
 .carousel-item .placeholder {
@@ -167,19 +183,10 @@
   object-fit: cover;
 }
 
-/* img {
-  max-width: 100%;
-  max-height: 100%;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  display: block;
-} */
 
-/* Estilos para tabla de consumos */
 .table-responsive {
   border-radius: 8px;
-  overflow: hidden;
+  overflow: scroll;
   margin: 0 20px 20px 20px;
 }
 
@@ -211,7 +218,7 @@
   cursor: pointer;
 }
 
-/* Responsive: en pantallas pequeñas */
+
 @media (max-width: 768px) {
   .table {
     font-size: 12px;
