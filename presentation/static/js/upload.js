@@ -43,6 +43,13 @@ document.addEventListener("DOMContentLoaded", function () {
         method: "POST",
         body: formData,
       });
+
+      // Si no está autenticado, redirigir a login
+      if (response.status === 401) {
+        window.location.href = '/login';
+        return;
+      }
+
       const data = await response.json();
 
       console.log(data);
