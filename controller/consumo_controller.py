@@ -49,8 +49,7 @@ class ConsumoController:
 
             total_proteinas = sum(c['proteinas'] for c in consumo_semana)
             total_grasas = sum(c['grasas'] for c in consumo_semana)
-            total_carbohidratos = sum(c['carbohidratos']
-                                      for c in consumo_semana)
+            total_carbohidratos = sum(c['carbohidratos']for c in consumo_semana)
             total_calorias = sum(c['calorias'] for c in consumo_semana)
             total_colesterol = sum(c['colesterol'] for c in consumo_semana)
 
@@ -183,6 +182,14 @@ class ConsumoController:
             return comidas
         except Exception as e:
             print(f"Error al obtener todas las comidas: {str(e)}")
+            return []
+
+    @staticmethod
+    def obtener_ultimos_consumos_semanales(usuario_id: int, limite: int = 2):
+        try:
+            return ConsumoRepository.obtener_ultimos_consumos_semanales(usuario_id, limite)
+        except Exception as e:
+            print(f"Error al obtener últimos consumos semanales: {str(e)}")
             return []
 
     @staticmethod

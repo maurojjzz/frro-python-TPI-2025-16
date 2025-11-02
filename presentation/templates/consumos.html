@@ -45,7 +45,7 @@
     </div>
   </div>
 
-  <div class="graficos border border-danger">
+  <div class="graficos">
     {% if carrousel_info.comida_max_calorias.nombre != "Sin datos" %}
     <div class="graf_div_container">
       <div class="graf_div_box shadow-lg">
@@ -180,63 +180,82 @@
         <div id="plotly-semanal" style="width: 100%; height: 250px; max-width: 800px; margin: 0 auto"></div>
       </div>
 
-      <div class="graf_div_box shadow-lg">tambien podes agregar del consumo de hoy. PODES NO, ¡DEBES !!</div>
-    </div>
-
-    <!--
-    <div class="graficos border border-success">
-      <div class="grafico-barras">
-        <h2>Gráfico de Barras</h2>
-        {% if grafico_barras %}
-        <img src="{{ url_for('static', filename='images/graficos/' ~ grafico_barras) }}" alt="grafico-barras" />
-        {% elif error %}
-        <p>{{ error }}</p>
-        {% endif %}
-      </div>
-      <div class="grafico-torta">
-        <h2>Gráfico de Torta</h2>
-        {% if grafico_torta %}
-        <img src="{{ url_for('static', filename='images/graficos/' ~ grafico_torta) }}" alt="grafico-torta" />
-        {% elif error %}
-        <p>{{ error }}</p>
-        {% endif %}
-      </div>
-      <div class="grafico-plot">
-        <h2>Gráfico de Dispersión</h2>
-        {% if grafico_lineas %}
-        <img src="{{ url_for('static', filename='images/graficos/' ~ grafico_lineas) }}" alt="grafico-plot" />
-        {% elif error %}
-        <p>{{ error }}</p>
-        {% endif %}
-      </div>
-      <div class="comida-mas-calorias">
-        <h2>Comida más Calórica</h2>
-        {% if comida_mas_calorias %}
-        <br />
-        <h3>{{ comida_mas_calorias.nombre }}</h3>
-        <img src="{{ comida_mas_calorias.imagen_url }}" alt="comida-mas-calorias" />
-        <p>({{ comida_mas_calorias.calorias }} calorías)</p>
-
-        {% else %}
-        <h3>No se encontraron datos de comidas.</h3>
-        {% endif %}
+      <div class="graf_div_box shadow-lg">
+        <div id="plotly-hoy" style="width: 100%; height: 250px; max-width: 800px; margin: 0 auto"></div>
       </div>
     </div>
-    
 
-    <div class="comidas-dia"></div>
-    -->
+    <div class="graf_div_container">
+      <div class="graf_div_box shadow-lg">
+        <div id="plotly-hist" style="width: 100%; height: auto; min-height: 450px; max-width: 800px; margin: 0 auto"></div>
+      </div>
+
+      <div class="graf_div_box shadow-lg">
+        <div id="plotly-linea" style="width: 100%; height: 450px; max-width: 800px; margin: 0 auto"></div>
+      </div>
+    </div>
+    <div class="graf_div_container">
+      <div class="graf_div_box shadow-lg" style="max-width: 100%; overflow-x: auto;">
+        <h4 class="text-center mb-3 mt-3">Detalle de consumos de la semana</h4>
+        <div class="table-responsive">
+          <table class="table table-striped table-hover align-middle">
+            <thead class="table-dark">
+              <tr>
+                <th scope="col">Fecha</th>
+                <th scope="col">Día</th>
+                <th scope="col">Alimento Detectado</th>
+                <th scope="col">Proteínas (g)</th>
+                <th scope="col">Carbohidratos (g)</th>
+                <th scope="col">Grasas (g)</th>
+                <th scope="col">Colesterol (mg)</th>
+                <th scope="col">Calorías(kcal)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% set dias_espanol = {
+                'Monday': 'Lunes',
+                'Tuesday': 'Martes',
+                'Wednesday': 'Miércoles',
+                'Thursday': 'Jueves',
+                'Friday': 'Viernes',
+                'Saturday': 'Sábado',
+                'Sunday': 'Domingo'
+              } %}
+              {% if comida_usuario_semana_elegida is not none and not comida_usuario_semana_elegida.empty %}
+                {% for index, row in comida_usuario_semana_elegida.iterrows() %}
+                <tr>
+                  <td>{{ row['fecha_consumo'].strftime('%d/%m/%Y') if row['fecha_consumo'] is not none else '-' }}</td>
+                  <td>{{ dias_espanol[row['fecha_consumo'].strftime('%A')] if row['fecha_consumo'] is not none else '-' }}</td>
+                  <td class="fw-bold">{{ row['nombre'] if row['nombre'] is not none else '-' }}</td>
+                  <td>{{ "%.0f"|format(row['proteinas']) if row['proteinas'] is not none else '0' }}</td>
+                  <td>{{ "%.0f"|format(row['carbohidratos']) if row['carbohidratos'] is not none else '0' }}</td>
+                  <td>{{ "%.0f"|format(row['grasas']) if row['grasas'] is not none else '0' }}</td>
+                  <td>{{ "%.0f"|format(row['colesterol']) if row['colesterol'] is not none else '0' }}</td>
+                  <td class="fw-bold">{{ "%.0f"|format(row['calorias']) if row['calorias'] is not none else '0' }}</td>
+                </tr>
+                {% endfor %}
+              {% else %}
+                <tr>
+                  <td colspan="8" class="text-center text-muted">No hay datos de consumo para esta semana</td>
+                </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+
   </div>
   {% else %}
-    <div class="graf_div_container">
-      <div class="graf_div_box shadow-lg d-flex flex-column justify-content-center align-items-center">
-        <h4 class="text-muted">No hay datos de consumo para mostrar esta semana.</h4>
-        <p class="text-muted">Intenta subir una imagen de tu comida para obtener información nutricional.</p>
-        <p class="text-muted">O utilice los filtros de búsqueda.</p>
-
-      </div>
+  <div class="graf_div_container">
+    <div class="graf_div_box shadow-lg d-flex flex-column justify-content-center align-items-center">
+      <h4 class="text-muted">No hay datos de consumo para mostrar esta semana.</h4>
+      <p class="text-muted">Intenta subir una imagen de tu comida para obtener información nutricional.</p>
+      <p class="text-muted">O utilice los filtros de búsqueda.</p>
     </div>
-    {% endif %}
+  </div>
+  {% endif %}
 </div>
 
 {% endblock %} {% block scripts %}
@@ -250,6 +269,18 @@
 {% endif %} {% if graphPieJSON %}
 <script>
   window.graphPieJSON = {{ graphPieJSON | safe }};
+</script>
+{% endif %} {% if graphHistJSON %}
+<script>
+  window.graphHistJSON = {{ graphHistJSON | safe }};
+</script>
+{% endif %} {% if graphLineJSON %}
+<script>
+  window.graphLineJSON = {{ graphLineJSON | safe }};
+</script>
+{% endif %} {% if graphHoyJSON %}
+<script>
+  window.graphHoyJSON = {{ graphHoyJSON | safe }};
 </script>
 {% endif %}
 

@@ -102,6 +102,13 @@
   flex: 1 1 400px; /* crecer achicarse min-wrap */
 }
 
+.graf_div_box_doble{
+  border:1px solid red;
+  height: 200px ;
+  max-width: 600px;
+  
+}
+
 /* Carousel inside graf_div_box */
 .carousel-wrapper {
   width: 100%;
@@ -168,3 +175,54 @@
   object-fit: contain;
   display: block;
 } */
+
+/* Estilos para tabla de consumos */
+.table-responsive {
+  border-radius: 8px;
+  overflow: hidden;
+  margin: 0 20px 20px 20px;
+}
+
+.table {
+  margin-bottom: 0;
+  font-size: 14px;
+}
+
+.table thead th {
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 12px 8px;
+  white-space: nowrap;
+}
+
+.table tbody td {
+  padding: 12px 8px;
+  vertical-align: middle;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.table-hover tbody tr:hover {
+  background-color: rgba(21, 163, 73, 0.1);
+  cursor: pointer;
+}
+
+/* Responsive: en pantallas pequeñas */
+@media (max-width: 768px) {
+  .table {
+    font-size: 12px;
+  }
+  
+  .table thead th,
+  .table tbody td {
+    padding: 8px 4px;
+  }
+  
+  .graf_div_box {
+    min-width: 100%;
+  }
+}

@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, jsonify, request, redirect, url_for, session, flash
 import os
 from dotenv import load_dotenv
-from datetime import date
+from datetime import date, timedelta
 from controller.consumo_controller import ConsumoController
 from controller.imagen import subir_imagen_controller
 from controller.fat_secret import reconocer_imagen, procesar_datos_fasecret
@@ -12,7 +12,7 @@ from controller.user_controller import registrar_usuario, obtener_historial_comi
 from controller.login_controller import login_usuario
 import pandas as pd
 import plotly.express as px
-import json
+import plotly.graph_objects as go
 
 views_bp = Blueprint('views', __name__)
 
@@ -89,7 +89,8 @@ def subir_imagen():
             reconocimiento = reconocer_imagen(resultado_subida['url'])
 
             nombres_alimentos = extraer_nombres_de_fatsecret(reconocimiento)
-            titulo_atractivo = generar_titulo_con_openai(nombres_alimentos, resultado_subida['url'])
+            titulo_atractivo = generar_titulo_con_openai(
+                nombres_alimentos, resultado_subida['url'])
 
             analisis_nutricion = procesar_datos_fasecret(reconocimiento)
 
@@ -182,15 +183,24 @@ def consumos():
     api_url = os.getenv('API_URL')
     usuario = session.get('usuario')
 
+    # cada vez que entramos a consumos que se actualice el consumo semanal
+    ConsumoController.actualizar_consumo_semanal(usuario['id'])
+
     comidas_usuario = ConsumoController.todas_las_comidas(usuario['id'])
-    semana = ConsumoController.obtener_consumo_semanal(usuario['id'], date.today())
+    semana = ConsumoController.obtener_consumo_semanal(
+        usuario['id'], date.today())
+    hoy = ConsumoController.obtener_consumo_diario(usuario['id'], date.today())
 
     # Convertir semana a dict (es un solo objeto)
     semana_dict = getattr(semana, "__dict__", {})
     semana_dict.pop('_sa_instance_state', None)
     df = pd.DataFrame([semana_dict]) if semana_dict else pd.DataFrame()
 
-    # Convertir comidas_usuario a DataFrame (es una lista de objetos)
+    # Convertir hoy a dataframe
+    hoy_dict = getattr(hoy, "__dict__", {})
+    hoy_dict.pop('_sa_instance_state', None)
+    df_hoy = pd.DataFrame([hoy_dict]) if hoy_dict else pd.DataFrame()
+
     if comidas_usuario:
         comidas_list = []
         for comida in comidas_usuario:
@@ -217,19 +227,34 @@ def consumos():
                 labels.append(label)
                 values.append(float(df.iloc[0][col] or 0))
 
-    # Genera los gráficos con Plotly Express
+    labels_hoy = []
+    values_hoy = []
+    # Mapeo específico para consumo diario (sin sufijo _total)
+    columnas_diarias = {
+        'calorias': 'Calorías (kcal)',
+        'proteinas': 'Proteínas (g)',
+        'carbohidratos': 'Carbohidratos (g)',
+        'grasas': 'Grasas (g)',
+        'colesterol': 'Colesterol (mg)'
+    }
+    if not df_hoy.empty:
+        for col, label in columnas_diarias.items():
+            if col in df_hoy.columns:
+                labels_hoy.append(label)
+                values_hoy.append(float(df_hoy.iloc[0][col] or 0))
+
     graphJSON = None
     graphPieJSON = None
+    graphHoyJSON = None
+    graphLineJSON = None
 
     if labels and values:
-        # Crear DataFrame para plotly.express
         df_plot = pd.DataFrame({
             'Nutriente': labels,
             'Cantidad': values
         })
 
-        colores_nutrientes = ['#15a349', '#4285f4',
-                              '#fbbc04', '#ea4335', '#9c27b0']
+        colores_nutrientes = ['#15a349', '#4285f4','#fbbc04', '#ea4335', '#9c27b0']
 
         # Gráfico de barras
         fig_bar = px.bar(
@@ -254,20 +279,203 @@ def consumos():
             df_plot,
             values='Cantidad',
             names='Nutriente',
-            # title='Porcentajes de nutrientes ',
+            title='Porcentajes de nutrientes consumido en la semana',
             color='Nutriente',
             color_discrete_sequence=colores_nutrientes,
             hole=0.4
         )
 
         fig_pie.update_layout(
-            margin=dict(t=0, r=0, b=0, l=0)
+            margin=dict(t=35, r=0, b=0, l=0)
         )
         graphPieJSON = fig_pie.to_json()
 
-        carrousel_info = ConsumoController.calculoNutrientesMax(df, comidas_usuario_df)
+    if labels_hoy and values_hoy:
+        df_plot_hoy = pd.DataFrame({
+            'Nutriente': labels_hoy,
+            'Cantidad': values_hoy
+        })
 
-        print("Carrousel Info:", carrousel_info)
+        colores_nutrientes_hoy = ['#ff5733','#33c1ff', '#75ff33', '#ff33d4', '#ffbd33']
+        # Gráfico de barras diario
+        fig_bar_hoy = px.bar(
+            df_plot_hoy,
+            x='Nutriente',
+            y='Cantidad',
+            title='Consumo de nutrientes del día',
+            color='Nutriente',
+            color_discrete_sequence=colores_nutrientes_hoy
+        )
+
+        fig_bar_hoy.update_layout(
+            margin=dict(t=40, r=20, b=40, l=40),
+            xaxis_title='Nutrientes',
+            yaxis_title='Cantidad',
+            showlegend=False
+        )
+        graphHoyJSON = fig_bar_hoy.to_json()
+
+    # Gráfico de líneas: evolución diaria de macros (últimos 30 días)
+    if not comidas_usuario_df.empty:
+        df_line = comidas_usuario_df.copy()
+        df_line['fecha_consumo'] = pd.to_datetime(df_line['fecha_consumo'])
+        start_date = pd.to_datetime(date.today() - timedelta(days=29))
+        end_date = pd.to_datetime(date.today())
+        mask = (df_line['fecha_consumo'] >= start_date) & (df_line['fecha_consumo'] <= end_date)
+        df_line = df_line[mask]
+
+        if not df_line.empty:
+            df_line['fecha'] = df_line['fecha_consumo'].dt.normalize()
+            # Asegurar columnas de macros
+            macro_cols = ['calorias', 'proteinas', 'carbohidratos', 'grasas']
+            for c in macro_cols:
+                if c not in df_line.columns:
+                    df_line[c] = 0
+            df_line[macro_cols] = df_line[macro_cols].fillna(0)
+
+            agg = df_line.groupby('fecha')[macro_cols].sum().reset_index()
+            # Completar fechas faltantes con 0
+            full_idx = pd.date_range(start=start_date.normalize(), end=end_date.normalize(), freq='D')
+            df_full = pd.DataFrame({'fecha': full_idx})
+            agg = df_full.merge(agg, on='fecha', how='left')
+            agg[macro_cols] = agg[macro_cols].fillna(0)
+
+            # Renombrar a etiquetas amigables y pasar a formato largo
+            rename_map = {
+                'calorias': 'Calorías (kcal)',
+                'proteinas': 'Proteínas (g)',
+                'carbohidratos': 'Carbohidratos (g)',
+                'grasas': 'Grasas (g)'
+            }
+            agg_ren = agg.rename(columns=rename_map)
+            long_df = agg_ren.melt(id_vars='fecha', value_vars=list(rename_map.values()), var_name='Nutriente', value_name='Cantidad')
+
+            colores_linea = ['#15a349', '#4285f4', '#fbbc04', '#ea4335']
+            fig_line = px.line(
+                long_df,
+                x='fecha',
+                y='Cantidad',
+                color='Nutriente',
+                title='Evolución diaria de macros (últimos 30 días)',
+                color_discrete_sequence=colores_linea
+            )
+            fig_line.update_traces(mode='lines+markers')
+            fig_line.update_layout(
+                margin=dict(t=40, r=20, b=40, l=40),
+                xaxis_title='Fecha',
+                yaxis_title='Cantidad',
+                hovermode='x unified'
+            )
+            graphLineJSON = fig_line.to_json()
+
+    carrousel_info = ConsumoController.calculoNutrientesMax(df, comidas_usuario_df)
+
+    datita = ConsumoController.obtener_ultimos_consumos_semanales(usuario['id'])
+
+    # Construir DataFrame limpiando el atributo interno de SQLAlchemy
+    filas = []
+    for semana_obj in datita:
+        d = getattr(semana_obj, "__dict__", {}).copy()
+        d.pop('_sa_instance_state', None)
+        filas.append(d)
+    df_semsems = pd.DataFrame(filas)
+
+    df_semsems['fecha_inicio'] = pd.to_datetime(df_semsems['fecha_inicio'])
+    df_semsems['fecha_fin'] = pd.to_datetime(df_semsems['fecha_fin'])
+
+    if not comidas_usuario_df.empty:
+        comidas_usuario_df['fecha_consumo'] = pd.to_datetime(comidas_usuario_df['fecha_consumo'])
+
+        merged_list = []
+        for _, semana_row in df_semsems.iterrows():
+            mask = (
+                (comidas_usuario_df['fecha_consumo'] >= semana_row['fecha_inicio']) &
+                (comidas_usuario_df['fecha_consumo'] <= semana_row['fecha_fin'])
+            )
+            comidas_semana = comidas_usuario_df[mask].copy()
+
+            if not comidas_semana.empty:
+                comidas_semana['fecha_inicio'] = semana_row['fecha_inicio']
+                comidas_semana['fecha_fin'] = semana_row['fecha_fin']
+                merged_list.append(comidas_semana)
+            else:
+                semana_vacia = pd.DataFrame([{
+                    'fecha_inicio': semana_row['fecha_inicio'],
+                    'fecha_fin': semana_row['fecha_fin'],
+                    'fecha_consumo': None
+                }])
+                merged_list.append(semana_vacia)
+
+        df_merged = pd.concat(merged_list, ignore_index=True) if merged_list else pd.DataFrame()
+    else:
+        df_merged = df_semsems[['fecha_inicio', 'fecha_fin']].copy()
+        df_merged['fecha_consumo'] = None
+
+    semanas_unicas = df_merged[['fecha_inicio', 'fecha_fin']].drop_duplicates().head(2)
+    df_final = df_merged[
+        df_merged['fecha_inicio'].isin(semanas_unicas['fecha_inicio'])
+    ].sort_values('fecha_inicio', ascending=False)
+
+
+    # Mapeo de día de semana (0=Lunes, 6=Domingo)
+    dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
+
+    df_final_copy = df_final.copy()
+    df_final_copy['dia_semana'] = df_final_copy['fecha_consumo'].dt.dayofweek
+
+    conteo = df_final_copy.groupby(['fecha_inicio', 'dia_semana']).size().reset_index(name='cantidad')
+
+    semanas_list = sorted(semanas_unicas['fecha_inicio'].unique(), reverse=True)
+
+    import itertools
+    combinaciones = list(itertools.product(semanas_list, range(7)))
+    df_completo = pd.DataFrame(combinaciones, columns=['fecha_inicio', 'dia_semana'])
+
+    df_completo = df_completo.merge(conteo, on=['fecha_inicio', 'dia_semana'], how='left')
+    df_completo['cantidad'] = df_completo['cantidad'].fillna(0).astype(int)
+
+    df_completo['nombre_dia'] = df_completo['dia_semana'].apply(lambda x: dias_semana[x])
+
+    fig = go.Figure()
+
+    for i, semana_inicio in enumerate(semanas_list):
+        df_semana = df_completo[df_completo['fecha_inicio'] == semana_inicio]
+
+        fig.add_trace(go.Bar(
+            x=df_semana['nombre_dia'],
+            y=df_semana['cantidad'],
+            name=f"Semana {semana_inicio.strftime('%d/%m')}",
+            text=df_semana['cantidad'],
+            textposition='outside'
+        ))
+
+    fig.update_layout(
+        title='Comparacion subidas semana actual vs anterior',
+        xaxis_title='Día de la semana',
+        yaxis_title='Cantidad de comidas',
+        barmode='group',
+        xaxis={'categoryorder': 'array', 'categoryarray': dias_semana},
+        margin=dict(t=40, r=20, b=40, l=40)
+    )
+
+    graphHistJSON = fig.to_json()
+    
+    #calculo para tabla html
+    comida_usuario_semana_elegida = None
+    if not df_semsems.empty and not comidas_usuario_df.empty:
+        limites_fecha = df_semsems[['fecha_inicio', 'fecha_fin']].head(1)
+        comida_usuario_semana_elegida = comidas_usuario_df[
+            comidas_usuario_df['fecha_consumo'].between(
+                limites_fecha['fecha_inicio'].values[0], 
+                limites_fecha['fecha_fin'].values[0]
+            )
+        ].copy()
+        
+        if not comida_usuario_semana_elegida.empty:
+            comida_usuario_semana_elegida = comida_usuario_semana_elegida.sort_values('fecha_consumo', ascending=False)
+            
+            columnas_tabla = ['nombre', 'fecha_consumo', 'calorias', 'proteinas', 'carbohidratos', 'grasas', 'colesterol']
+            comida_usuario_semana_elegida = comida_usuario_semana_elegida[columnas_tabla]
 
     return render_template(
         'consumos.html',
@@ -275,11 +483,12 @@ def consumos():
         usuario=usuario,
         graphJSON=graphJSON,
         graphPieJSON=graphPieJSON,
-        carrousel_info=carrousel_info
+        graphHoyJSON=graphHoyJSON,
+        graphLineJSON=graphLineJSON,
+        graphHistJSON=graphHistJSON,
+        carrousel_info=carrousel_info,
+        comida_usuario_semana_elegida=comida_usuario_semana_elegida
     )
-
-
-
 
 
 @views_bp.route('/buscar', methods=['POST'])

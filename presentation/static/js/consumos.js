@@ -50,4 +50,49 @@ document.addEventListener("DOMContentLoaded", function () {
       ]
     });
   }
+
+  // Renderizar histograma comparativo si existe graphHistJSON
+  const plotHistDiv = document.getElementById("plotly-hist");
+  if (plotHistDiv && window.Plotly && window.graphHistJSON) {
+    Plotly.newPlot('plotly-hist', window.graphHistJSON.data, window.graphHistJSON.layout, {
+      responsive: true,
+      displayModeBar: true,
+      displaylogo: false,
+      modeBarButtonsToRemove: [
+        'zoom2d', 'pan2d', 'select2d', 'lasso2d',
+        'resetScale2d', 'hoverClosestCartesian',
+        'hoverCompareCartesian', 'toggleSpikelines'
+      ]
+    });
+  }
+
+  // Renderizar gráfico de líneas 30 días si existe graphLineJSON
+  const plotLineaDiv = document.getElementById("plotly-linea");
+  if (plotLineaDiv && window.Plotly && window.graphLineJSON) {
+    Plotly.newPlot('plotly-linea', window.graphLineJSON.data, window.graphLineJSON.layout, {
+      responsive: true,
+      displayModeBar: true,
+      displaylogo: false,
+      modeBarButtonsToRemove: [
+        'zoom2d', 'pan2d', 'select2d', 'lasso2d',
+        'resetScale2d', 'hoverClosestCartesian',
+        'hoverCompareCartesian', 'toggleSpikelines'
+      ]
+    });
+  }
+
+  // Renderizar gráfico diario si existe graphHoyJSON
+  const plotHoyDiv = document.getElementById("plotly-hoy");
+  if (plotHoyDiv && window.Plotly && window.graphHoyJSON) {
+    Plotly.newPlot('plotly-hoy', window.graphHoyJSON.data, window.graphHoyJSON.layout, {
+      responsive: true,
+      displayModeBar: true,
+      displaylogo: false,
+      modeBarButtonsToRemove: [
+        'zoom2d', 'pan2d', 'select2d', 'lasso2d',
+        'resetScale2d', 'hoverClosestCartesian',
+        'hoverCompareCartesian', 'toggleSpikelines'
+      ]
+    });
+  }
 });
