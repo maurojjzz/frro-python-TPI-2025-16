@@ -54,10 +54,11 @@
               <li class="nav-item">
                 <a class="nav-link active" aria-current="page" href="{{ url_for('views.index') }}">Inicio</a>
               </li>
+              
+              {% if usuario %}
               <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('views.historial_comidas') }}">Historial comidas cargadas</a>
               </li>
-              {% if usuario %}
               <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('views.consumos') }}">Consumos</a>
               </li>

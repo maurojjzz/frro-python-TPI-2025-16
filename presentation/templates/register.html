@@ -34,6 +34,9 @@ Registro de Usuario | Mi PlatoIA
 
       <button type="submit">Registrar</button>
       <p class="text-center">¿Ya tienes una cuenta? <a href="{{ url_for('views.login') }}">Inicia sesión aquí</a></p>
+      <a href="https://www.fatsecret.com" target="_blank" >
+        <img src="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret.png" srcset="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_2x.png 2x, https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_3x.png 3x" border="0"/>
+      </a>
     </form>
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
