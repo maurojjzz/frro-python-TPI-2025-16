@@ -23,24 +23,24 @@
 
 .btn-filtro {
   padding: 8px 20px;
-  border: 1px solid #ddd;
-  background-color: #fff;
-  color: #666;
+  border: 1px solid #111827; /* dark border */
+  background-color: #1f2937; /* dark slate */
+  color: #ffffff; /* white text for contrast */
   border-radius: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   font-size: 14px;
 }
 
 .btn-filtro:hover {
-  background-color: #f5f5f5;
-  border-color: #15a349;
+  background-color: #374151; /* slightly lighter dark */
+  border-color: #374151;
 }
 
 .btn-filtro.active {
-  background-color: #15a349;
-  color: white;
-  border-color: #15a349;
+  background-color: #0e7a35; /* darker green */
+  color: #ffffff;
+  border-color: #0e7a35;
 }
 
 .titulo-seccion {
@@ -74,43 +74,97 @@
 }
 
 .graficos {
-  width: auto;
-  height: auto;
-  display: grid;
-  align-items: center;
-  justify-content: center;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  gap: 50px;
-}
-.grafico-barras,
-.grafico-torta,
-.grafico-plot,
-.comida-mas-calorias {
-  width: 600px;
-  height: 450px;
   display: flex;
-  margin-top: 35px;
   flex-direction: column;
   align-items: center;
-  overflow: hidden; /* evita que la imagen sobresalga del contenedor */
+  justify-content: center;
+  flex-grow: 1;
+
+}
+.graf_div_container{
+  /* border:1px solid red; */
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  gap: 30px;
+  flex-wrap: wrap;
+  margin-bottom: 50px;
+  margin-top: 30px;
 }
 
-.comida-mas-calorias img {
-  width: 300px;
-  height: 300px;
-  object-position: center;
-  display: block;
-  border-radius: 10px;
-  margin-top: 15px;
+.graf_div_box{
+  /* border:1px solid red; */
+  min-width: 400px;
+  max-width: 600px;        
+  min-height: 200px;
+  flex: 1 1 400px; /* crecer achicarse min-wrap */
 }
 
-/* Regla genérica: no distorsionar ni recortar imágenes fuera de sus contenedores */
-img {
+/* Carousel inside graf_div_box */
+.carousel-wrapper {
+  width: 100%;
+  height: 250px; /* Match chart height for consistency */
+}
+
+.carousel,
+.carousel-inner,
+.carousel-item {
+  height: 100%;
+}
+
+.carousel-item > img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover; /* Fill area nicely */
+}
+
+.carousel-item .placeholder {
+  font-size: 1.25rem;
+}
+
+.carousel-control-next,
+.carousel-control-prev{
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carrousel-box{
+  margin-left: 30px;
+  margin-right: 30px;
+}
+
+.box-carr-contenido{
+  height: 160px;
+}
+
+.carrousel-imagen-box{
+  width: 320px;
+  height: 160px;
+  overflow: hidden;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+.ssubbb{
+  color: #555;
+  font-size: 14px;
+}
+
+.carrousel-imagen-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* img {
   max-width: 100%;
   max-height: 100%;
   width: auto;
   height: auto;
   object-fit: contain;
   display: block;
-}
+} */

@@ -1,57 +1,190 @@
-{% extends "base.html" %} 
-{% block title %}Consumos Diarios{% endblock %} 
-
-{% block extra_css %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/consumos.css') }}" />
-{% endblock %} 
-
-{% block content %}
-<div class="container-fluid main-box text-center  mt-4">
-  <div class="mb-4" >
+{% extends "base.html" %} {% block title %}Consumos Diarios{% endblock %} {% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/consumos.css') }}" />
+{% endblock %} {% block content %}
+<div class="container-fluid main-box text-center mt-4">
+  <div class="mb-4">
     <h2 class="titulo">Dashboard de analisis nutricional</h2>
     <p class="subtitulo mb-0">Visualiza tus consumos diarios de manera sencilla</p>
   </div>
 
-  <div class="container-opciones ">
-
-    <div class="filtros-rapidos ">
-      <button type="button" class="btn btn-filtro active" data-filtro="semana-actual">
-        Semana actual
-      </button>
-      <button type="button" class="btn btn-filtro" data-filtro="7dias">
-        Últimos 7 días
-      </button>
-      <button type="button" class="btn btn-filtro" data-filtro="30dias">
-        Últimos 30 días
-      </button>
+  <div class="container-opciones">
+    <div class="filtros-rapidos">
+      <button type="button" class="btn btn-filtro active" data-filtro="semana-actual">Semana actual</button>
+      <button type="button" class="btn btn-filtro" data-filtro="7dias">Últimos 7 días</button>
+      <button type="button" class="btn btn-filtro" data-filtro="30dias">Últimos 30 días</button>
     </div>
 
     <div>
       <form method="POST" action="/buscar">
         <div class="fechas-rango">
-
           <div class="form-floating">
-            <input type="date" class="form-control  border" id="floatingInput" placeholder="dd/mm/aaaa" name="fecha_inicio">
+            <input
+              type="date"
+              class="form-control border"
+              id="floatingInput"
+              placeholder="dd/mm/aaaa"
+              name="fecha_inicio"
+            />
             <label for="floatingInput">Fecha de Inicio</label>
           </div>
 
           <div class="form-floating">
-            <input type="date" class="form-control border" id="floatingInput" placeholder="dd/mm/aaaa" name="fecha_fin">
+            <input
+              type="date"
+              class="form-control border"
+              id="floatingInput"
+              placeholder="dd/mm/aaaa"
+              name="fecha_fin"
+            />
             <label for="floatingInput">Fecha Fin</label>
           </div>
 
-          <button type="submit" class="btn btnEnviar text-white rounded-5 ">Aplicar</button>
+          <button type="submit" class="btn btnEnviar text-white rounded-5">Aplicar</button>
         </div>
       </form>
     </div>
-
   </div>
 
-  <div class="container">
-    <div class="titulo-seccion">
-      <h3>Gráficos</h3>
+  <div class="graficos border border-danger">
+    {% if carrousel_info.comida_max_calorias.nombre != "Sin datos" %}
+    <div class="graf_div_container">
+      <div class="graf_div_box shadow-lg">
+        <div class="carousel-wrapper">
+          <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+              <button
+                type="button"
+                data-bs-target="#carouselExampleIndicators"
+                data-bs-slide-to="0"
+                class="active bg-dark"
+                aria-current="true"
+                aria-label="Slide 1"
+              ></button>
+              <button
+                type="button"
+                data-bs-target="#carouselExampleIndicators"
+                data-bs-slide-to="1"
+                class="bg-dark"
+                aria-label="Slide 2"
+              ></button>
+              <button
+                type="button"
+                data-bs-target="#carouselExampleIndicators"
+                data-bs-slide-to="2"
+                class="bg-dark"
+                aria-label="Slide 3"
+              ></button>
+            </div>
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <div class="d-flex flex-column h-100 carrousel-box">
+                  <h3 class="fs-5 carrousel-titulo text-start mt-1 ms-1">Comida mas calorica de la semana</h3>
+                  <div class="d-flex flex-row align-items-center h-100">
+                    <div class="ms-2 carrousel-imagen-box">
+                      <img
+                        src="{{ carrousel_info.comida_max_calorias.imagen_url }}"
+                        alt="Imagen de la comida"
+                        class="carrousel-imagen-box"
+                      />
+                    </div>
+                    <div class="me-2 ms-1 w-100 box-carr-contenido d-flex flex-column justify-content-center">
+                      <h4 class="fs-5 carrousel-titulo text-start ms-1">
+                        {{carrousel_info.comida_max_calorias.nombre}}
+                      </h4>
+                      <h4 class="fs-5 carrousel-titulo text-start mt-1 ms-1 text-muted">
+                        {{carrousel_info.comida_max_calorias.calorias}} kcal
+                      </h4>
+                      <p class="carrousel-titulo text-start ssubbb mt-1 ms-1">
+                        Consumido el: {{carrousel_info.comida_max_calorias.fecha_consumo}}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="d-flex flex-column h-100 carrousel-box">
+                  <h3 class="fs-5 carrousel-titulo text-start mt-1 ms-1">Comida con mas proteinas de la semana</h3>
+                  <div class="d-flex flex-row align-items-center h-100">
+                    <div class="ms-2 carrousel-imagen-box">
+                      <img
+                        src="{{ carrousel_info.com_max_proteinas.imagen_url }}"
+                        alt="Imagen de la comida"
+                        class="carrousel-imagen-box"
+                      />
+                    </div>
+                    <div class="me-2 ms-1 w-100 box-carr-contenido d-flex flex-column justify-content-center">
+                      <h4 class="fs-5 carrousel-titulo text-start ms-1">{{carrousel_info.com_max_proteinas.nombre}}</h4>
+                      <h4 class="fs-5 carrousel-titulo text-start mt-1 ms-1">
+                        {{carrousel_info.com_max_proteinas.proteinas}} g
+                      </h4>
+                      <p class="carrousel-titulo text-start ssubbb mt-1 ms-1">
+                        Consumido el: {{carrousel_info.com_max_proteinas.fecha_consumo}}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="carousel-item">
+                <div class="d-flex flex-column h-100 carrousel-box">
+                  <h3 class="fs-5 carrousel-titulo text-start mt-1 ms-1">Comida mas grasosa de la semana</h3>
+                  <div class="d-flex flex-row align-items-center h-100">
+                    <div class="ms-2 carrousel-imagen-box">
+                      <img
+                        src="{{ carrousel_info.com_max_grasas.imagen_url }}"
+                        alt="Imagen de la comida"
+                        class="carrousel-imagen-box"
+                      />
+                    </div>
+                    <div class="me-2 ms-1 w-100 box-carr-contenido d-flex flex-column justify-content-center">
+                      <h4 class="fs-5 carrousel-titulo text-start ms-1">{{carrousel_info.com_max_grasas.nombre}}</h4>
+                      <h4 class="fs-5 carrousel-titulo text-start mt-1 ms-1">
+                        {{carrousel_info.com_max_grasas.grasas}} g
+                      </h4>
+                      <p class="carrousel-titulo text-start ssubbb mt-1 ms-1">
+                        Consumido el: {{carrousel_info.com_max_grasas.fecha_consumo}}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <button
+              class="carousel-control-prev"
+              type="button"
+              data-bs-target="#carouselExampleIndicators"
+              data-bs-slide="prev"
+            >
+              <span class="carousel-control-prev-icon bg-dark" aria-hidden="false"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button
+              class="carousel-control-next"
+              type="button"
+              data-bs-target="#carouselExampleIndicators"
+              data-bs-slide="next"
+            >
+              <span class="carousel-control-next-icon bg-dark" aria-hidden="false"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="graf_div_box shadow-lg">
+        <div id="plotly-pie" style="width: 100%; height: 250px; max-width: 800px; margin: 0 auto"></div>
+      </div>
     </div>
-    <div class="graficos">
+
+    <div class="graf_div_container">
+      <div class="graf_div_box shadow-lg">
+        <div id="plotly-semanal" style="width: 100%; height: 250px; max-width: 800px; margin: 0 auto"></div>
+      </div>
+
+      <div class="graf_div_box shadow-lg">tambien podes agregar del consumo de hoy. PODES NO, ¡DEBES !!</div>
+    </div>
+
+    <!--
+    <div class="graficos border border-success">
       <div class="grafico-barras">
         <h2>Gráfico de Barras</h2>
         {% if grafico_barras %}
@@ -89,12 +222,36 @@
         {% endif %}
       </div>
     </div>
+    
+
     <div class="comidas-dia"></div>
+    -->
   </div>
+  {% else %}
+    <div class="graf_div_container">
+      <div class="graf_div_box shadow-lg d-flex flex-column justify-content-center align-items-center">
+        <h4 class="text-muted">No hay datos de consumo para mostrar esta semana.</h4>
+        <p class="text-muted">Intenta subir una imagen de tu comida para obtener información nutricional.</p>
+        <p class="text-muted">O utilice los filtros de búsqueda.</p>
+
+      </div>
+    </div>
+    {% endif %}
 </div>
 
-{% endblock %} 
+{% endblock %} {% block scripts %}
+<script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
 
-{% block scripts %}
-  <script src="{{ url_for('static', filename='js/consumos.js') }}"></script>
+{% if graphJSON %}
+<script>
+  // Exponer gráficos como variables globales para consumos.js
+  window.graphJSON = {{ graphJSON | safe }};
+</script>
+{% endif %} {% if graphPieJSON %}
+<script>
+  window.graphPieJSON = {{ graphPieJSON | safe }};
+</script>
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/consumos.js') }}"></script>
 {% endblock %}

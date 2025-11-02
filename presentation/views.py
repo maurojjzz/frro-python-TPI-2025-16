@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, jsonify, request, redirect, url_for, session, flash
 import os
 from dotenv import load_dotenv
+from datetime import date
 from controller.consumo_controller import ConsumoController
 from controller.imagen import subir_imagen_controller
 from controller.fat_secret import reconocer_imagen, procesar_datos_fasecret
@@ -9,6 +10,9 @@ from controller.comida import crear_comida
 from data.repositories.comida_repository import ComidaRepository
 from controller.user_controller import registrar_usuario, obtener_historial_comidas
 from controller.login_controller import login_usuario
+import pandas as pd
+import plotly.express as px
+import json
 
 views_bp = Blueprint('views', __name__)
 
@@ -22,7 +26,8 @@ def index():
     ultimas_comidas = []
     if usuario:
         try:
-            ultimas_comidas = ComidaRepository.traer_ultimas_tres_comidas(usuario['id']) or []
+            ultimas_comidas = ComidaRepository.traer_ultimas_tres_comidas(
+                usuario['id']) or []
         except Exception:
             ultimas_comidas = []
     return render_template('index.html', api_url=api_url, usuario=usuario, ultimas_comidas=ultimas_comidas)
@@ -138,59 +143,169 @@ def logout():
     flash('Has cerrado sesión exitosamente.', 'success')
     return redirect(url_for('views.login'))
 
+
 @views_bp.route('/obtener-historial-html')
 def obtener_historial_html():
     usuario = session.get('usuario')
     if not usuario:
         return jsonify({"error": "No autenticado"}), 401
-    
+
     try:
-        ultimas_comidas = ComidaRepository.traer_ultimas_tres_comidas(usuario['id']) or []
+        ultimas_comidas = ComidaRepository.traer_ultimas_tres_comidas(
+            usuario['id']) or []
         return render_template('partials/historial_partial.html', ultimas_comidas=ultimas_comidas)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 @views_bp.route('/inicializar-historial')
 def inicializar_historial():
     usuario = session.get('usuario')
     if not usuario:
         return jsonify({"error": "No autenticado"}), 401
-    
+
     try:
         # ✅ INICIALIZAR TODO EL HISTORIAL DEL USUARIO
-        semanas = ConsumoController.inicializar_consumos_historicos(usuario['id'])
+        semanas = ConsumoController.inicializar_consumos_historicos(
+            usuario['id'])
 
         print(f'✅ Historial inicializado: {len(semanas)} semanas procesadas')
         return redirect(url_for('views.index'))
-        
+
     except Exception as e:
         print(f'❌ Error al inicializar historial: {str(e)}')
         return redirect(url_for('views.index'))
 
-@views_bp.route('/consumos', methods=['GET'])
+
+@views_bp.route('/consumos')
 def consumos():
-   return render_template('consumos.html')
+    api_url = os.getenv('API_URL')
+    usuario = session.get('usuario')
+
+    comidas_usuario = ConsumoController.todas_las_comidas(usuario['id'])
+    semana = ConsumoController.obtener_consumo_semanal(usuario['id'], date.today())
+
+    # Convertir semana a dict (es un solo objeto)
+    semana_dict = getattr(semana, "__dict__", {})
+    semana_dict.pop('_sa_instance_state', None)
+    df = pd.DataFrame([semana_dict]) if semana_dict else pd.DataFrame()
+
+    # Convertir comidas_usuario a DataFrame (es una lista de objetos)
+    if comidas_usuario:
+        comidas_list = []
+        for comida in comidas_usuario:
+            comida_dict = getattr(comida, "__dict__", {})
+            comida_dict.pop('_sa_instance_state', None)
+            comidas_list.append(comida_dict)
+        comidas_usuario_df = pd.DataFrame(comidas_list)
+    else:
+        comidas_usuario_df = pd.DataFrame()
+
+    columnas_totales = {
+        'calorias_total': 'Calorías (kcal)',
+        'proteinas_total': 'Proteínas (g)',
+        'carbohidratos_total': 'Carbohidratos (g)',
+        'grasas_total': 'Grasas (g)',
+        'colesterol_total': 'Colesterol (mg)'
+    }
+
+    labels = []
+    values = []
+    if not df.empty:
+        for col, label in columnas_totales.items():
+            if col in df.columns:
+                labels.append(label)
+                values.append(float(df.iloc[0][col] or 0))
+
+    # Genera los gráficos con Plotly Express
+    graphJSON = None
+    graphPieJSON = None
+
+    if labels and values:
+        # Crear DataFrame para plotly.express
+        df_plot = pd.DataFrame({
+            'Nutriente': labels,
+            'Cantidad': values
+        })
+
+        colores_nutrientes = ['#15a349', '#4285f4',
+                              '#fbbc04', '#ea4335', '#9c27b0']
+
+        # Gráfico de barras
+        fig_bar = px.bar(
+            df_plot,
+            x='Nutriente',
+            y='Cantidad',
+            title='Consumo de nutrientes la semana',
+            color='Nutriente',
+            color_discrete_sequence=colores_nutrientes
+        )
+
+        fig_bar.update_layout(
+            margin=dict(t=40, r=20, b=40, l=40),
+            xaxis_title='Nutrientes',
+            yaxis_title='Cantidad',
+            showlegend=False
+        )
+        graphJSON = fig_bar.to_json()
+
+        # Grafico torta
+        fig_pie = px.pie(
+            df_plot,
+            values='Cantidad',
+            names='Nutriente',
+            # title='Porcentajes de nutrientes ',
+            color='Nutriente',
+            color_discrete_sequence=colores_nutrientes,
+            hole=0.4
+        )
+
+        fig_pie.update_layout(
+            margin=dict(t=0, r=0, b=0, l=0)
+        )
+        graphPieJSON = fig_pie.to_json()
+
+        carrousel_info = ConsumoController.calculoNutrientesMax(df, comidas_usuario_df)
+
+        print("Carrousel Info:", carrousel_info)
+
+    return render_template(
+        'consumos.html',
+        api_url=api_url,
+        usuario=usuario,
+        graphJSON=graphJSON,
+        graphPieJSON=graphPieJSON,
+        carrousel_info=carrousel_info
+    )
+
+
+
+
 
 @views_bp.route('/buscar', methods=['POST'])
 def buscar_consumo():
     usuario = session.get('usuario')
     fecha_inicio_str = request.form.get('fecha_inicio')
     fecha_fin_str = request.form.get('fecha_fin')
-    fecha_str = request.form.get('fecha')  
+    fecha_str = request.form.get('fecha')
     try:
         if fecha_inicio_str and fecha_fin_str:
-            resultado = ConsumoController.generar_graficos_semanales(usuario['id'], fecha_inicio_str, fecha_fin_str)
+            resultado = ConsumoController.generar_graficos_semanales(
+                usuario['id'], fecha_inicio_str, fecha_fin_str)
             comida = None
         else:
-            fecha_str = request.form['fecha']  # Recibe la fecha del formulario (string)
-            resultado = ConsumoController.generar_graficos(usuario['id'], fecha_str)
-            comida = ComidaRepository.obtener_comida_mas_calorias(usuario['id'], fecha_str)
+            # Recibe la fecha del formulario (string)
+            fecha_str = request.form['fecha']
+            resultado = ConsumoController.generar_graficos(
+                usuario['id'], fecha_str)
+            comida = ComidaRepository.obtener_comida_mas_calorias(
+                usuario['id'], fecha_str)
             if resultado == "No hay datos para esa fecha":
                 return render_template('consumos.html', usuario=usuario, error=resultado)
     except Exception as e:
         return render_template('consumos.html', usuario=usuario, error=f"Error al generar gráficos: {str(e)}")
     # Si se generó el gráfico correctamente
-    
+
     if isinstance(resultado, dict):
         grafico_barras = resultado.get("grafico_barras")
         grafico_torta = resultado.get("grafico_torta")
