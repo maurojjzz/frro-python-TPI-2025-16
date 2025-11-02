@@ -91,3 +91,17 @@ class ConsumoRepository:
             print(e)
         finally:
             db.close()
+
+    @staticmethod
+    def obtener_ultimos_consumos_semanales(usuario_id: int, limite: int = 2):
+        db = SessionLocal()
+        try:
+            return (
+                db.query(ConsumoSemanal)
+                .filter(ConsumoSemanal.usuario_id == usuario_id)
+                .order_by(ConsumoSemanal.fecha_inicio.desc())
+                .limit(limite)
+                .all()
+            )
+        finally:
+            db.close()

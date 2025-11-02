@@ -103,3 +103,12 @@ class ComidaRepository:
             return comidas
         except Exception as e:
             raise ValueError(f"Error al obtener el historial de comidas: {str(e)}")
+        
+    @staticmethod
+    def obtener_todas_las_comidas(usuario_id: int):
+        db = SessionLocal()
+        try:
+            comidas = db.query(Comida).filter(Comida.usuario_id == usuario_id).order_by(Comida.fecha_consumo.desc()).all()
+            return comidas
+        finally:
+            db.close()

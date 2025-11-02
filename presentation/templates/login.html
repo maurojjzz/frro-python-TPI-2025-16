@@ -24,6 +24,9 @@ Iniciar Sesion | Mi PlatoIA
       </div>
       <button type="submit">Iniciar Sesión</button>
       <p class="">¿No tienes una cuenta? <a href="{{ url_for('views.register') }}">Regístrate aquí</a></p>
+      <a href="https://www.fatsecret.com" target="_blank" >
+        <img src="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret.png" srcset="https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_2x.png 2x, https://platform.fatsecret.com/api/static/images/powered_by_fatsecret_3x.png 3x" border="0"/>
+      </a>
     </form>
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
@@ -47,7 +50,7 @@ Iniciar Sesion | Mi PlatoIA
   {% include "shared/loading.html" %}
 </div>
 {% endblock %}
- 
+
 {% block scripts %}
 <script src="{{ url_for('static', filename='js/loadingWholePage.js') }}"></script>
 
