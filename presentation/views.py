@@ -89,7 +89,7 @@ def subir_imagen():
             reconocimiento = reconocer_imagen(resultado_subida['url'])
 
             nombres_alimentos = extraer_nombres_de_fatsecret(reconocimiento)
-            titulo_atractivo = generar_titulo_con_openai(nombres_alimentos)
+            titulo_atractivo = generar_titulo_con_openai(nombres_alimentos, resultado_subida['url'])
 
             analisis_nutricion = procesar_datos_fasecret(reconocimiento)
 
