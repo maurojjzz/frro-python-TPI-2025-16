@@ -426,9 +426,16 @@ def consumos():
     dias_semana = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo']
 
     df_final_copy = df_final.copy()
-    df_final_copy['dia_semana'] = df_final_copy['fecha_consumo'].dt.dayofweek
-
-    conteo = df_final_copy.groupby(['fecha_inicio', 'dia_semana']).size().reset_index(name='cantidad')
+    # Filtrar filas donde fecha_consumo no es None y convertir a datetime
+    df_final_copy = df_final_copy[df_final_copy['fecha_consumo'].notna()].copy()
+    
+    if not df_final_copy.empty:
+        df_final_copy['fecha_consumo'] = pd.to_datetime(df_final_copy['fecha_consumo'])
+        df_final_copy['dia_semana'] = df_final_copy['fecha_consumo'].dt.dayofweek
+        conteo = df_final_copy.groupby(['fecha_inicio', 'dia_semana']).size().reset_index(name='cantidad')
+    else:
+        # Si no hay datos, crear un DataFrame vacío con las columnas correctas
+        conteo = pd.DataFrame(columns=['fecha_inicio', 'dia_semana', 'cantidad'])
 
     semanas_list = sorted(semanas_unicas['fecha_inicio'].unique(), reverse=True)
 
