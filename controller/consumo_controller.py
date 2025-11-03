@@ -194,6 +194,29 @@ class ConsumoController:
 
     @staticmethod
     def calculoNutrientesMax(df: pds.DataFrame, comidas_usuario_df: pds.DataFrame):
+        # Validar que comidas_usuario_df no esté vacío y tenga las columnas necesarias
+        if comidas_usuario_df.empty or 'fecha_consumo' not in comidas_usuario_df.columns:
+            return {
+                "comida_max_calorias": {
+                    "nombre": "Sin datos",
+                    "calorias": "-",
+                    "imagen_url": "",
+                    "fecha_consumo": "-"
+                },
+                "com_max_grasas": {
+                    "nombre": "Sin datos",
+                    "grasas": "-",
+                    "imagen_url": "",
+                    "fecha_consumo": "-"
+                },
+                "com_max_proteinas": {
+                    "nombre": "Sin datos",
+                    "proteinas": "-",
+                    "imagen_url": "",
+                    "fecha_consumo": "-"
+                }
+            }
+        
         comidas_usuario_df['fecha_consumo'] = pds.to_datetime(comidas_usuario_df['fecha_consumo'])
 
         fecha_inicio = pds.to_datetime(df['fecha_inicio'].iloc[0])
