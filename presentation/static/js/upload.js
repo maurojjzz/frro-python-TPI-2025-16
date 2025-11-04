@@ -35,8 +35,9 @@ document.addEventListener("DOMContentLoaded", function () {
       document.querySelector(".imagen-subir").classList.add("d-none");
       form.classList.add("d-none");
       label.classList.remove("image-upload");
-      const oldPreview = uploadBox.querySelector(".upload-form");
-      if (oldPreview) oldPreview.remove();
+      // Eliminar TODOS los previews anteriores (no solo el primero)
+      const oldPreviews = uploadBox.querySelectorAll(".upload-form");
+      oldPreviews.forEach(preview => preview.remove());
       spinner.classList.remove("d-none");
 
       const response = await fetch(`${API_URL}/subir-imagen`, {
@@ -82,11 +83,16 @@ document.addEventListener("DOMContentLoaded", function () {
         
         // Actualizar el historial nutricional usando Jinja2
         updateHistorialNutricional();
+        
+        // Resetear el input para permitir subir el mismo archivo nuevamente
+        fileInput.value = "";
       } else {
         alert("Error al subir la imagen", data?.error);
+        fileInput.value = "";
       }
     } catch (error) {
       console.error("Error en la solicitud:", error);
+      fileInput.value = "";
     } finally {
       spinner.classList.add("d-none");
     }
