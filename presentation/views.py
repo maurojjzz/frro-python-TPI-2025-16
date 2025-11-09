@@ -89,8 +89,12 @@ def subir_imagen():
             reconocimiento = reconocer_imagen(resultado_subida['url'])
 
             nombres_alimentos = extraer_nombres_de_fatsecret(reconocimiento)
-            titulo_atractivo = generar_titulo_con_openai(
-                nombres_alimentos, resultado_subida['url'])
+            
+            # Si Gemini ya generó el título en el fallback, usarlo; sino llamar a generar_titulo_con_openai
+            titulo_atractivo = reconocimiento.get('titulo_generado')
+            if not titulo_atractivo:
+                titulo_atractivo = generar_titulo_con_openai(
+                    nombres_alimentos, resultado_subida['url'])
 
             analisis_nutricion = procesar_datos_fasecret(reconocimiento)
 
